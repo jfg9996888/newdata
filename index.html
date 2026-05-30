@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AntigravityIDE 數據分析與視覺化互動儀表板</title>
+  <!-- 載入 Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- 載入 Google 字型 -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif;
+    }
+    /* 質感滾動條 */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #020617;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e1b4b;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #4f46e5;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen selection:bg-violet-600 selection:text-white">
+
+  <!-- 頂部導覽列 -->
+  <header class="border-b border-slate-800 bg-slate-900/60 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 py-3.5 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-3.5">
+        <div class="relative p-2.5 bg-slate-950 rounded-xl text-white border border-slate-800">
+          <svg class="w-6 h-6 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 3.055A9.003 9.003 0 1020.945 13H11V3.055z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-lg font-black tracking-wider bg-gradient-to-r from-violet-400 via-indigo-300 to-cyan-300 bg-clip-text text-transparent">
+            ANTIGRAVITY IDE
+          </h1>
+          <p class="text-[11px] text-slate-400 font-semibold uppercase tracking-widest">學員回覆分析與課程策略羅盤</p>
+        </div>
+      </div>
+
+      <!-- 導覽分頁按鈕 -->
+      <nav class="flex space-x-1 bg-slate-950/60 p-1 rounded-xl border border-slate-800">
+        <button onclick="switchTab('dashboard')" id="btn-dashboard" class="px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold tracking-wide transition-all duration-300 bg-violet-600 text-white shadow-lg">
+          📊 數據看板
+        </button>
+        <button onclick="switchTab('matrix')" id="btn-matrix" class="px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold tracking-wide transition-all duration-300 text-slate-400 hover:text-white hover:bg-slate-900">
+          🧩 交叉分析
+        </button>
+        <button onclick="switchTab('solutions')" id="btn-solutions" class="px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold tracking-wide transition-all duration-300 text-slate-400 hover:text-white hover:bg-slate-900">
+          💡 課程策略
+        </button>
+        <button onclick="switchTab('rawData')" id="btn-rawData" class="px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold tracking-wide transition-all duration-300 text-slate-400 hover:text-white hover:bg-slate-900">
+          📋 原始數據
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    
+    <!-- 拖放上傳區 -->
+    <section class="bg-slate-900/40 border border-slate-800 rounded-3xl p-6 backdrop-blur-md relative overflow-hidden group">
+      <div class="absolute -inset-x-20 -top-40 h-80 bg-violet-600/5 rounded-full blur-3xl pointer-events-none" />
+      <div class="relative flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="space-y-2 text-center md:text-left flex-1">
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-black bg-violet-500/10 text-violet-300 border border-violet-500/30 uppercase tracking-widest">
+            即時解析系統 Ready
+          </span>
+          <h2 class="text-xl sm:text-2xl font-black text-white tracking-tight">問卷 CSV 檔案動態解析儀</h2>
+          <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">
+            目前使用來源：<span id="loaded-file-name" class="text-indigo-400 font-mono font-bold underline bg-indigo-950/20 px-2 py-0.5 rounded">系統預設高品質真實回覆模擬集</span>。
+            拖曳任何您的問卷 CSV 回覆檔案到網頁中，圖表會在微秒內極速重畫！
+          </p>
+        </div>
+
+        <div class="w-full md:w-auto shrink-0" id="drop-zone">
+          <label class="flex flex-col items-center justify-center px-8 py-4 bg-slate-900 hover:bg-slate-850 border-2 border-dashed border-slate-800 hover:border-violet-500/50 rounded-2xl cursor-pointer transition-all duration-300 text-center">
+            <div class="flex items-center space-x-2.5">
+              <svg class="w-5 h-5 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+              </svg>
+              <span class="text-xs sm:text-sm font-black text-white">點擊或拖放您的問卷 CSV</span>
+            </div>
+            <span class="text-[10px] text-slate-500 mt-1.5 font-semibold">支援萬用欄位語意配對演算法</span>
+            <input type="file" id="file-input" accept=".csv" class="hidden" onchange="handleFileSelect(event)" />
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- 篩選控制面板 -->
+    <section class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 shadow-xl flex flex-col md:flex-row items-center justify-between gap-5 relative">
+      <div class="flex items-start space-x-3 w-full md:w-auto">
+        <div class="text-xl p-2 bg-indigo-500/10 rounded-lg text-indigo-400">⚡</div>
+        <div>
+          <h3 class="font-bold text-white text-sm sm:text-base">全域變數篩選控制盤</h3>
+          <p class="text-xs text-slate-500 leading-relaxed mt-0.5">篩選條件會同步更新所有分頁下的統計數值</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full md:w-auto flex-1 max-w-3xl">
+        <div class="flex flex-col">
+          <label class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">對象職務類別</label>
+          <select id="filter-role" onchange="updateFilters()" class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500 transition">
+            <option value="ALL">🎯 所有職別對象</option>
+          </select>
+        </div>
+
+        <div class="flex flex-col">
+          <label class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">AI 工具使用頻率</label>
+          <select id="filter-frequency" onchange="updateFilters()" class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500 transition">
+            <option value="ALL">⌛ 所有使用頻率</option>
+          </select>
+        </div>
+
+        <div class="flex flex-col">
+          <label class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">模糊全文搜索</label>
+          <div class="relative">
+            <input type="text" id="search-term" oninput="updateFilters()" placeholder="輸入關鍵字..." class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-8 pr-3 py-2 text-xs sm:text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-violet-500" />
+            <span class="absolute left-2.5 top-2.5 text-xs text-slate-500">🔍</span>
+          </div>
+        </div>
+      </div>
+
+      <button id="btn-clear-filters" onclick="clearFilters()" class="hidden text-xs font-bold text-pink-400 hover:text-pink-300 hover:underline shrink-0">
+        清除所有條件
+      </button>
+    </section>
+
+    <!-- 分頁一: 數據看板 -->
+    <div id="tab-dashboard" class="space-y-8">
+      
+      <!-- KPI 指標計量卡 -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl relative overflow-hidden group hover:border-violet-500/30 transition">
+          <p class="text-[10px] text-slate-400 font-black tracking-widest uppercase">篩選後樣本規模</p>
+          <div class="flex items-baseline space-x-1.5 mt-2">
+            <span id="kpi-total" class="text-3xl font-black text-white">0</span>
+            <span class="text-xs text-slate-500">人填答</span>
+          </div>
+          <p id="kpi-pct" class="text-xs text-slate-400 mt-3">佔總填答數據的 100%</p>
+        </div>
+
+        <div class="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl relative overflow-hidden group hover:border-indigo-500/30 transition">
+          <p class="text-[10px] text-slate-400 font-black tracking-widest uppercase">重度使用比例</p>
+          <div class="flex items-baseline space-x-1.5 mt-2">
+            <span id="kpi-frequency" class="text-3xl font-black text-white">0%</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-3">每日深度綁定工作流之比例</p>
+        </div>
+
+        <div class="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl relative overflow-hidden group hover:border-fuchsia-500/30 transition">
+          <p class="text-[10px] text-slate-400 font-black tracking-widest uppercase">平均執行效率提升</p>
+          <div class="flex items-baseline space-x-1.5 mt-2">
+            <span id="kpi-efficiency" class="text-3xl font-black text-white">0.0</span>
+            <span class="text-xs text-slate-500">/ 5.0 分</span>
+          </div>
+          <div id="kpi-stars" class="mt-2 text-amber-400 text-xs"></div>
+        </div>
+
+        <div class="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl relative overflow-hidden group hover:border-cyan-500/30 transition">
+          <p class="text-[10px] text-slate-400 font-black tracking-widest uppercase">提問痛點集中度</p>
+          <div class="flex items-baseline space-x-1.5 mt-2">
+            <span id="kpi-pain" class="text-3xl font-black text-pink-400">0%</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-3">苦於幻覺與問診下提示詞困難</p>
+        </div>
+      </div>
+
+      <!-- 圖表區一：工具與場景 -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- 常用 AI 工具排行 -->
+        <div class="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl shadow-xl space-y-6">
+          <div class="flex items-center justify-between border-b border-slate-800/60 pb-3">
+            <h4 class="font-bold text-white text-sm sm:text-base flex items-center space-x-2">
+              <span class="w-2 h-2 rounded-full bg-violet-500" />
+              <span>當前使用 AI 工具佔有率排行</span>
+            </h4>
+            <span class="text-[10px] text-slate-500 font-bold uppercase">可複選</span>
+          </div>
+          <div id="chart-tools" class="space-y-4"></div>
+        </div>
+
+        <!-- 應用場景需求 -->
+        <div class="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl shadow-xl space-y-6">
+          <div class="flex items-center justify-between border-b border-slate-800/60 pb-3">
+            <h4 class="font-bold text-white text-sm sm:text-base flex items-center space-x-2">
+              <span class="w-2 h-2 rounded-full bg-fuchsia-500" />
+              <span>亟待優化之工作應用場景</span>
+            </h4>
+            <span class="text-[10px] text-slate-500 font-bold uppercase">需求強度排序</span>
+          </div>
+          <div id="chart-scenarios" class="space-y-4"></div>
+        </div>
+      </div>
+
+      <!-- 困難痛點 與 進階工具熟悉度 (環狀圖) -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- 困難痛點 -->
+        <div class="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl shadow-xl lg:col-span-2 space-y-5">
+          <div class="border-b border-slate-800/60 pb-3">
+            <h4 class="font-bold text-white text-sm sm:text-base flex items-center space-x-2">
+              <span class="w-2 h-2 rounded-full bg-pink-500" />
+              <span>學員使用 AI 之最大困難痛點分佈</span>
+            </h4>
+          </div>
+          <div id="chart-obstacles" class="space-y-4"></div>
+        </div>
+
+        <!-- 穿透率 Donut SVG -->
+        <div class="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col justify-between">
+          <div class="space-y-5">
+            <div class="border-b border-slate-800/60 pb-3">
+              <h4 class="font-bold text-white text-sm sm:text-base flex items-center space-x-2">
+                <span class="w-2 h-2 rounded-full bg-cyan-400" />
+                <span>進階授課工具穿透率</span>
+              </h4>
+            </div>
+            
+            <div class="flex justify-around items-center py-4">
+              <!-- NotebookLM -->
+              <div class="flex flex-col items-center space-y-2">
+                <div class="relative w-24 h-24">
+                  <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                    <path class="text-slate-800" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    <path id="ring-notebooklm" class="text-cyan-400 transition-all duration-1000" stroke-width="3.5" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                  </svg>
+                  <div class="absolute inset-0 flex flex-col items-center justify-center">
+                    <span id="donut-val-notebook" class="text-lg font-black text-white">0%</span>
+                    <span class="text-[9px] text-slate-500 font-bold uppercase">使用過</span>
+                  </div>
+                </div>
+                <span class="text-xs text-slate-300 font-bold">NotebookLM</span>
+              </div>
+
+              <!-- Napkin AI -->
+              <div class="flex flex-col items-center space-y-2">
+                <div class="relative w-24 h-24">
+                  <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                    <path class="text-slate-800" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    <path id="ring-visual" class="text-fuchsia-400 transition-all duration-1000" stroke-width="3.5" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                  </svg>
+                  <div class="absolute inset-0 flex flex-col items-center justify-center">
+                    <span id="donut-val-visual" class="text-lg font-black text-white">0%</span>
+                    <span class="text-[9px] text-slate-500 font-bold uppercase">曾嘗試</span>
+                  </div>
+                </div>
+                <span class="text-xs text-slate-300 font-bold">圖解工具 (Napkin)</span>
+              </div>
+            </div>
+          </div>
+          <div class="mt-4 pt-4 border-t border-slate-800/60 text-[10px] text-slate-500 text-center font-bold">
+            ⚠️ 穿透率低代表本次課程之 NotebookLM 知識管理與 Napkin 視覺化將極具震撼效果。
+          </div>
+        </div>
+      </div>
+
+      <!-- 心聲金句牆 -->
+      <div class="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl shadow-xl space-y-6">
+        <div class="border-b border-slate-800/60 pb-3">
+          <h4 class="font-bold text-white text-sm sm:text-base flex items-center space-x-2">
+            <span>💬</span>
+            <span>「AI 對我而言是什麼？」學員心聲極速探照</span>
+          </h4>
+        </div>
+        <div id="quotes-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-[300px] overflow-y-auto pr-2"></div>
+      </div>
+
+    </div>
+
+    <!-- 分頁二: 交叉分析 -->
+    <div id="tab-matrix" class="hidden space-y-8">
+      <div class="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl shadow-xl space-y-6">
+        <div class="border-b border-slate-800/60 pb-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div>
+            <h3 class="text-xl font-bold text-white">🧩 互動式多維交叉熱圖矩陣</h3>
+            <p class="text-xs text-slate-400 mt-1">隨心切換 X 與 Y 軸之特徵維度，透視各職級在使用偏好上的隱性關聯</p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-3">
+            <div class="flex items-center space-x-2">
+              <span class="text-xs text-slate-500 font-bold">X軸對應:</span>
+              <select id="matrix-x" onchange="updateMatrix()" class="bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1 text-xs text-slate-300 focus:outline-none">
+                <option value="role">1. 職務類別</option>
+                <option value="frequency">3. AI 使用頻率</option>
+              </select>
+            </div>
+
+            <div class="flex items-center space-x-2">
+              <span class="text-xs text-slate-500 font-bold">Y軸對應:</span>
+              <select id="matrix-y" onchange="updateMatrix()" class="bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1 text-xs text-slate-300 focus:outline-none">
+                <option value="difficulty">9. 面臨最大困難</option>
+                <option value="tools">2. 最常使用 AI 工具</option>
+                <option value="notebookLM">7. NotebookLM 經驗</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- 熱圖表格 -->
+        <div class="overflow-x-auto border border-slate-850 rounded-xl bg-slate-950/60">
+          <table id="matrix-table" class="min-w-full text-left text-xs border-collapse"></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 分頁三: 課程策略 -->
+    <div id="tab-solutions" class="hidden space-y-8">
+      <div class="bg-slate-900/40 border border-slate-800 rounded-3xl p-6 shadow-xl relative overflow-hidden">
+        <div class="absolute top-0 right-0 p-8 text-slate-800/10 font-bold text-9xl select-none leading-none">REPORT</div>
+        
+        <div class="relative space-y-6">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+            <div>
+              <h3 class="text-2xl font-black bg-gradient-to-r from-violet-400 via-indigo-300 to-fuchsia-300 bg-clip-text text-transparent">AI 智能教案策畫與簡報作戰大綱</h3>
+              <p class="text-slate-400 text-xs mt-1">基於當前篩選數據，智能生成給講師團隊的簡報切入方向</p>
+            </div>
+            <button onclick="copyInstructorReport()" class="shrink-0 flex items-center space-x-2 bg-violet-600 hover:bg-violet-700 text-white font-bold px-4 py-2 rounded-xl text-xs sm:text-sm transition-all shadow-lg">
+              <span>📋 複製講師策略報告</span>
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="p-6 rounded-2xl bg-slate-950/60 border border-slate-850 space-y-3.5">
+              <div class="text-2xl">🔥</div>
+              <h4 class="text-base sm:text-lg font-black text-white">攻堅對策一：如何破除幻覺與下精準提示詞</h4>
+              <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">分析中「幻覺問題」與「提示詞問診」比例極高。這顯示出學員常用 ChatGPT，但多停留在淺層詢問。</p>
+              <div class="p-3.5 rounded-xl bg-violet-950/20 border border-violet-900/40 text-xs text-violet-300 space-y-1.5 leading-relaxed">
+                <p class="font-bold">🎯 講師授課切入指引：</p>
+                <p>1. **ChatGPT & Gemini**：不要只教聊天，現場演示「結構化 Prompt 框架 (RTFC 框架)」與「預設定義問診模型」。</p>
+                <p>2. 提供「少樣本 (Few-shot) 投餵技術」，現場比較有下限制與無限制之回覆差距。</p>
+              </div>
+            </div>
+
+            <div class="p-6 rounded-2xl bg-slate-950/60 border border-slate-850 space-y-3.5">
+              <div class="text-2xl">⚡</div>
+              <h4 class="text-base sm:text-lg font-black text-white">攻堅對策二：高WOW點 NotebookLM 標註與視覺化圖解</h4>
+              <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">NotebookLM 與 Napkin AI 有大量學員處於「未聽過、不熟悉」的狀態。這具有最高的教學溢價與體驗反差。</p>
+              <div class="p-3.5 rounded-xl bg-cyan-950/20 border border-cyan-900/40 text-xs text-cyan-300 space-y-1.5 leading-relaxed">
+                <p class="font-bold">🎯 講師授課切入指引：</p>
+                <p>1. **NotebookLM**：主打「只信任你提供的內部文件」，不聯網、無幻覺，適合應對公司資安疑慮的對象。</p>
+                <p>2. **Napkin AI**：帶領學員實作「貼入一文字 ➔ 秒生圖解矩陣」，展示資訊視覺化的效率增幅。</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 課堂實戰演示名單 -->
+          <div class="pt-6 border-t border-slate-850">
+            <h4 class="font-bold text-white mb-3 text-sm sm:text-base flex items-center space-x-2">
+              <span>💡</span>
+              <span>學員上傳之待解「雞肋任務」演示庫 (講師精選)</span>
+            </h4>
+            <p class="text-xs text-slate-500 mb-4">以下列出明確勾選「願意提供實戰去識別化資料」之學員回覆。建議講師直接選擇此情境做為教學現場解題，說服力直接拉滿！</p>
+            <div class="overflow-x-auto border border-slate-850 rounded-xl bg-slate-950/40">
+              <table class="min-w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr class="bg-slate-950 text-slate-400 font-bold border-b border-slate-850">
+                    <th class="p-4">職務別</th>
+                    <th class="p-4">現有常用工具</th>
+                    <th class="p-4">期待解決之具體工作任務</th>
+                    <th class="p-4 text-center">演示意願狀態</th>
+                  </tr>
+                </thead>
+                <tbody id="demo-tasks-tbody" class="divide-y divide-slate-850 text-slate-300"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 分頁四: 原始數據 -->
+    <div id="tab-rawData" class="hidden space-y-8">
+      <div class="bg-slate-900/40 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-5">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <h3 class="text-xl font-bold text-white">📋 學員原始問卷回覆明細</h3>
+            <p id="raw-total-desc" class="text-xs text-slate-400">目前清單共包含 0 筆資料</p>
+          </div>
+          <button onclick="resetToDemo()" class="px-3.5 py-1.5 text-xs font-bold rounded-lg border border-slate-850 hover:bg-slate-850 text-slate-400 hover:text-white transition">
+            重設為預設模擬資料
+          </button>
+        </div>
+
+        <div class="overflow-x-auto border border-slate-850 rounded-xl bg-slate-950/60">
+          <table class="min-w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="bg-slate-950 text-slate-400 font-bold border-b border-slate-850">
+                <th class="p-4">時間</th>
+                <th class="p-4">職務類別</th>
+                <th class="p-4">常用工具</th>
+                <th class="p-4">使用頻率</th>
+                <th class="p-4">效率分</th>
+                <th class="p-4">提示詞掌握</th>
+                <th class="p-4">NotebookLM</th>
+                <th class="p-4">最大困惑與障礙</th>
+                <th class="p-4">最期待解決之具體問題</th>
+              </tr>
+            </thead>
+            <tbody id="raw-data-tbody" class="divide-y divide-slate-850 text-slate-300"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="border-t border-slate-900 bg-slate-950 py-10 text-center text-xs text-slate-600 space-y-1 mt-12">
+    <p>© 2026 AntigravityIDE. 全球高端學術、課程教學數據儀表板系統.</p>
+    <p class="text-slate-700 font-semibold">特別針對 GitHub Pages 與靜態發布進行完美適配 &amp; 萬用 CSV 拖曳即用</p>
+  </footer>
+
+  <!-- 自定義 Toast 提示框 -->
+  <div id="toast-box" class="fixed bottom-5 right-5 z-50 transform translate-y-10 opacity-0 pointer-events-none transition-all duration-300 flex items-center bg-slate-900 border border-violet-500/50 text-white px-5 py-3 rounded-2xl shadow-2xl shadow-violet-950/40">
+    <span id="toast-icon" class="mr-2.5 text-violet-400 font-bold">ℹ️</span>
+    <span id="toast-text" class="text-xs sm:text-sm font-semibold">已更新數據</span>
+  </div>
+
+  <script>
+    // ==========================================
+    // 預設高品質範例資料
+    // ==========================================
+    const DEFAULT_PRESET_DATA = [
+      {
+        timestamp: "2026/5/15 上午 11:13:47",
+        role: "中階管理職",
+        tools: ["ChatGPT"],
+        frequency: "每天使用",
+        scenarios: ["文案/郵件撰寫", "創意發想/點子激盪"],
+        efficiency: 5,
+        promptSkill: 1,
+        notebookLM: "聽過但不會用",
+        visualTool: "是",
+        difficulty: "公司政策限制/資訊安全疑慮",
+        expectSolve: "ChatGPT 專案工作流程自動化",
+        boringTask: "願意，我可以提供相關去識別化資料",
+        whatIsAI: "工作效率的推進器"
+      },
+      {
+        timestamp: "2026/5/15 上午 11:15:47",
+        role: "中階管理職",
+        tools: ["ChatGPT", "Gemini (Google AI)"],
+        frequency: "每週使用數次",
+        scenarios: ["文案/郵件撰寫", "程式編寫/除錯"],
+        efficiency: 5,
+        promptSkill: 3,
+        notebookLM: "從未聽過",
+        visualTool: "否，都用純文字",
+        difficulty: "AI 會一本正經地胡說八道（幻覺問題）",
+        expectSolve: "ChatGPT",
+        boringTask: "目前不需要",
+        whatIsAI: "資訊整理的加速器"
+      },
+      {
+        timestamp: "2026/5/15 上午 11:15:57",
+        role: "一般職員",
+        tools: ["Gemini (Google AI)"],
+        frequency: "偶爾想到才用",
+        scenarios: ["會議紀錄整理"],
+        efficiency: 3,
+        promptSkill: 3,
+        notebookLM: "是，常用",
+        visualTool: "否，都用純文字",
+        difficulty: "不知道該如何下精準的提示詞（問診困難）",
+        expectSolve: "Gemini",
+        boringTask: "願意，我可以提供相關去識別化資料",
+        whatIsAI: "隨身小助理"
+      },
+      {
+        timestamp: "2026/5/15 上午 11:16:00",
+        role: "高階主管",
+        tools: ["ChatGPT"],
+        frequency: "偶爾想到才用",
+        scenarios: ["長篇文章摘要與分析"],
+        efficiency: 1,
+        promptSkill: 2,
+        notebookLM: "從未聽過",
+        visualTool: "否，都用純文字",
+        difficulty: "找不到適合自己工作流程的 AI 工具",
+        expectSolve: "報表數據快速查錯與摘要",
+        boringTask: "願意，我可以提供相關去識別化資料",
+        whatIsAI: "高效率的決策諮詢顧問"
+      },
+      {
+        timestamp: "2026/5/15 上午 11:16:00",
+        role: "中階管理職",
+        tools: ["ChatGPT", "Gemini (Google AI)", "NotebookLM (文件分析)"],
+        frequency: "每天使用",
+        scenarios: ["文案/郵件撰寫", "長篇文章摘要與分析", "程式編寫/除錯"],
+        efficiency: 3,
+        promptSkill: 3,
+        notebookLM: "是，常用",
+        visualTool: "否，都用純文字",
+        difficulty: "AI 會一本正經地胡說八道（幻覺問題）",
+        expectSolve: "Claude 結構化報告寫作",
+        boringTask: "目前不需要",
+        whatIsAI: "不知疲倦的虛擬部屬"
+      },
+      {
+        timestamp: "2026/5/15 上午 11:17:12",
+        role: "專業技術人員/工程師",
+        tools: ["ChatGPT", "Claude"],
+        frequency: "每天使用",
+        scenarios: ["程式編寫/除錯", "資料搜集與分析"],
+        efficiency: 4,
+        promptSkill: 4,
+        notebookLM: "聽過也用過幾次",
+        visualTool: "是",
+        difficulty: "不知道該如何下精準的提示詞（問診困難）",
+        expectSolve: "Claude API 的開發實戰應用",
+        boringTask: "願意，我可以提供相關去識別化資料",
+        whatIsAI: "最棒的 Copilot 寫 Code 夥伴"
+      },
+      {
+        timestamp: "2026/5/15 上午 11:18:30",
+        role: "一般職員",
+        tools: ["ChatGPT", "Perplexity (AI搜尋)"],
+        frequency: "每週使用數次",
+        scenarios: ["資料搜集與分析", "文案/郵件撰寫"],
+        efficiency: 3,
+        promptSkill: 2,
+        notebookLM: "從未聽過",
+        visualTool: "否，都用純文字",
+        difficulty: "AI 會一本正經地胡說八道（幻覺問題）",
+        expectSolve: "Perplexity 高效搜尋排雷",
+        boringTask: "願意，我可以提供相關去識別化資料",
+        whatIsAI: "大幅進化的次世代搜尋引擎"
+      },
+      {
+        timestamp: "2026/5/15 上午 11:19:45",
+        role: "基層主管/組長",
+        tools: ["ChatGPT", "Gemini (Google AI)"],
+        frequency: "每天使用",
+        scenarios: ["會議紀錄整理", "文案/郵件撰寫", "長篇文章摘要與分析"],
+        efficiency: 4,
+        promptSkill: 3,
+        notebookLM: "聽過但不會用",
+        visualTool: "聽過但沒用過",
+        difficulty: "不知道該如何下精準的提示詞（問診困難）",
+        expectSolve: "NotebookLM 快速解讀海量論文報告",
+        boringTask: "目前不需要",
+        whatIsAI: "團隊效率的催化劑"
+      },
+      {
+        timestamp: "2026/5/15 上午 11:21:05",
+        role: "專業技術人員/工程師",
+        tools: ["ChatGPT", "Claude", "Perplexity (AI搜尋)"],
+        frequency: "每天使用",
+        scenarios: ["程式編寫/除錯", "創意發想/點子激盪"],
+        efficiency: 5,
+        promptSkill: 4,
+        notebookLM: "聽過也用過幾次",
+        visualTool: "是",
+        difficulty: "公司政策限制/資訊安全疑慮",
+        expectSolve: "如何安全部署 local 端大語言模型",
+        boringTask: "願意，我可以提供相關去識別化資料",
+        whatIsAI: "思緒的第二大腦與外骨骼"
+      },
+      {
+        timestamp: "2026/5/15 上午 11:22:15",
+        role: "中階管理職",
+        tools: ["ChatGPT"],
+        frequency: "每週使用數次",
+        scenarios: ["文案/郵件撰寫", "長篇文章摘要與分析"],
+        efficiency: 3,
+        promptSkill: 3,
+        notebookLM: "聽過但不會用",
+        visualTool: "否，都用純文字",
+        difficulty: "AI 會一本正經地胡說八道（幻覺問題）",
+        expectSolve: "NotebookLM 本地化資料庫建立",
+        boringTask: "願意，我可以提供相關去識別化資料",
+        whatIsAI: "將雜亂資料快速梳理成型的漏斗"
+      },
+      {
+        timestamp: "2026/5/15 上午 11:25:30",
+        role: "行政/特助",
+        tools: ["ChatGPT"],
+        frequency: "每天使用",
+        scenarios: ["會議紀錄整理", "文案/郵件撰寫"],
+        efficiency: 4,
+        promptSkill: 2,
+        notebookLM: "從未聽過",
+        visualTool: "聽過但沒用過",
+        difficulty: "生成內容格式太混亂、需要大量手動調整",
+        expectSolve: "將混亂的會議逐字稿一鍵精準提煉",
+        boringTask: "願意，我可以提供相關去識別化資料",
+        whatIsAI: "每天省下兩小時下班的神器"
+      },
+      {
+        timestamp: "2026/5/15 上午 11:28:12",
+        role: "專案管理 (PM)",
+        tools: ["ChatGPT", "Perplexity (AI搜尋)"],
+        frequency: "每天使用",
+        scenarios: ["創意發想/點子激盪", "長篇文章摘要與分析", "資料搜集與分析"],
+        efficiency: 4,
+        promptSkill: 4,
+        notebookLM: "聽過也用過幾次",
+        visualTool: "是",
+        difficulty: "公司政策限制/資訊安全疑慮",
+        expectSolve: "跨國市場研究資料快速萃取",
+        boringTask: "願意，我可以提供相關去識別化資料",
+        whatIsAI: "跨界知識溝通的橋樑"
+      },
+      {
+        timestamp: "2026/5/15 上午 11:30:00",
+        role: "行銷/營運",
+        tools: ["ChatGPT", "Claude"],
+        frequency: "每天使用",
+        scenarios: ["文案/郵件撰寫", "創意發想/點子激盪"],
+        efficiency: 5,
+        promptSkill: 3,
+        notebookLM: "聽過但不會用",
+        visualTool: "是",
+        difficulty: "不知道該如何下精準的提示詞（問診困難）",
+        expectSolve: "Napkin AI 社群圖文一鍵轉換",
+        boringTask: "願意，我可以提供相關去識別化資料",
+        whatIsAI: "文案與創意的永動機"
+      }
+    ];
+
+    // ==========================================
+    // 全域變數狀態管理
+    // ==========================================
+    let state = {
+      surveyData: JSON.parse(JSON.stringify(DEFAULT_PRESET_DATA)),
+      filteredData: [],
+      activeTab: "dashboard",
+      filterRole: "ALL",
+      filterFrequency: "ALL",
+      searchTerm: "",
+      matrixX: "role",
+      matrixY: "difficulty"
+    };
+
+    // ==========================================
+    // 自定義非阻礙式 Toast 訊息箱
+    // ==========================================
+    function showToast(text, type = "success") {
+      const toast = document.getElementById("toast-box");
+      const toastText = document.getElementById("toast-text");
+      const toastIcon = document.getElementById("toast-icon");
+      
+      toastText.innerText = text;
+      toastIcon.innerText = type === "success" ? "✓" : "⚠️";
+      
+      toast.classList.remove("opacity-0", "translate-y-10", "pointer-events-none");
+      toast.classList.add("opacity-100", "translate-y-0");
+      
+      setTimeout(() => {
+        toast.classList.remove("opacity-100", "translate-y-0");
+        toast.classList.add("opacity-0", "translate-y-10", "pointer-events-none");
+      }, 2500);
+    }
+
+    // ==========================================
+    // 分頁切換器
+    // ==========================================
+    function switchTab(tabId) {
+      state.activeTab = tabId;
+      
+      // 更新按鈕樣式
+      const tabs = ["dashboard", "matrix", "solutions", "rawData"];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`btn-${t}`);
+        const view = document.getElementById(`tab-${t}`);
+        if (t === tabId) {
+          btn.className = "px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold tracking-wide transition-all duration-300 bg-violet-600 text-white shadow-lg";
+          view.classList.remove("hidden");
+        } else {
+          btn.className = "px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold tracking-wide transition-all duration-300 text-slate-400 hover:text-white hover:bg-slate-900";
+          view.classList.add("hidden");
+        }
+      });
+      
+      renderCurrentTab();
+    }
+
+    // ==========================================
+    // CSV 解析與模糊匹配對照
+    // ==========================================
+    function parseCSV(text) {
+      let lines = [];
+      let row = [""];
+      let inQuotes = false;
+      for (let i = 0; i < text.length; i++) {
+        let c = text[i];
+        let next = text[i + 1];
+        if (c === '"') {
+          if (inQuotes && next === '"') {
+            row[row.length - 1] += '"';
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (c === ',' && !inQuotes) {
+          row.push('');
+        } else if ((c === '\r' || c === '\n') && !inQuotes) {
+          if (c === '\r' && next === '\n') { i++; }
+          lines.push(row);
+          row = [''];
+        } else {
+          row[row.length - 1] += c;
+        }
+      }
+      if (row.length > 1 || row[0] !== '') {
+        lines.push(row);
+      }
+      return lines;
+    }
+
+    function mapCSVToJSON(rawRows) {
+      if (rawRows.length < 2) return [];
+      const headers = rawRows[0].map(h => h.trim());
+      
+      const findIndex = (keywords) => {
+        return headers.findIndex(h => keywords.some(k => h.toLowerCase().includes(k.toLowerCase())));
+      };
+
+      const idxMap = {
+        timestamp: 0,
+        role: findIndex(["職務", "role", "類別", "職稱"]),
+        tools: findIndex(["最常", "使用", "工具", "tools"]),
+        frequency: findIndex(["頻率", "frequency", "多常"]),
+        scenarios: findIndex(["應用", "場景", "用途", "scenarios"]),
+        efficiency: findIndex(["執行", "效率", "提升", "efficiency"]),
+        promptSkill: findIndex(["提示詞", "prompt", "結構化提問", "了解度"]),
+        notebookLM: findIndex(["notebooklm", "知識管理", "標註"]),
+        visualTool: findIndex(["視覺化", "圖解", "napkin", "visual"]),
+        difficulty: findIndex(["困難", "痛點", "障礙", "difficulty"]),
+        expectSolve: findIndex(["期待解決", "具體問題", "預期"]),
+        boringTask: findIndex(["雞肋", "任務", "願意提供", "演示"]),
+        whatIsAI: findIndex(["對我而言", "是什麼", "定義"])
+      };
+
+      // 安全機制底線
+      if (idxMap.role === -1) idxMap.role = 1;
+      if (idxMap.tools === -1) idxMap.tools = 2;
+      if (idxMap.frequency === -1) idxMap.frequency = 3;
+      if (idxMap.scenarios === -1) idxMap.scenarios = 4;
+      if (idxMap.efficiency === -1) idxMap.efficiency = 5;
+      if (idxMap.promptSkill === -1) idxMap.promptSkill = 6;
+      if (idxMap.notebookLM === -1) idxMap.notebookLM = 7;
+      if (idxMap.visualTool === -1) idxMap.visualTool = 8;
+      if (idxMap.difficulty === -1) idxMap.difficulty = 9;
+      if (idxMap.expectSolve === -1) idxMap.expectSolve = 10;
+      if (idxMap.boringTask === -1) idxMap.boringTask = 11;
+      if (idxMap.whatIsAI === -1) idxMap.whatIsAI = 12;
+
+      return rawRows.slice(1).filter(r => r.length > 2 && r[0]).map(row => {
+        const cleanMultiSelect = (val) => {
+          if (!val) return [];
+          let clean = val.replace(/^["']|["']$/g, '').trim();
+          return clean.split(/[,，、;\/]/).map(s => s.trim()).filter(Boolean);
+        };
+
+        return {
+          timestamp: row[idxMap.timestamp] || "",
+          role: row[idxMap.role] || "未填寫",
+          tools: cleanMultiSelect(row[idxMap.tools]),
+          frequency: row[idxMap.frequency] || "未知",
+          scenarios: cleanMultiSelect(row[idxMap.scenarios]),
+          efficiency: parseInt(row[idxMap.efficiency]) || 3,
+          promptSkill: parseInt(row[idxMap.promptSkill]) || 3,
+          notebookLM: row[idxMap.notebookLM] || "未知",
+          visualTool: row[idxMap.visualTool] || "未知",
+          difficulty: row[idxMap.difficulty] || "無特別困難",
+          expectSolve: row[idxMap.expectSolve] || "",
+          boringTask: row[idxMap.boringTask] || "",
+          whatIsAI: row[idxMap.whatIsAI] || "無"
+        };
+      });
+    }
+
+    // 處理上傳檔案
+    function handleFileSelect(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      processFile(file);
+    }
+
+    function processFile(file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const text = event.target.result;
+        const parsedRaw = parseCSV(text);
+        const formatted = mapCSVToJSON(parsedRaw);
+        if (formatted.length > 0) {
+          state.surveyData = formatted;
+          document.getElementById("loaded-file-name").innerText = `${file.name} (已載入 ${formatted.length} 筆)`;
+          showToast(`成功解析並載入 ${formatted.length} 筆問卷數據！`);
+          
+          // 重設並重新繪製
+          clearFilters();
+        } else {
+          showToast("無法解析該 CSV，請確定格式符合問卷回覆規格。", "error");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // 重設預設值
+    function resetToDemo() {
+      state.surveyData = JSON.parse(JSON.stringify(DEFAULT_PRESET_DATA));
+      document.getElementById("loaded-file-name").innerText = "系統預設高品質真實回覆模擬集";
+      showToast("已成功還原為預設模擬資料。");
+      clearFilters();
+    }
+
+    // 拖放功能建立
+    const dropZone = document.getElementById("drop-zone");
+    window.addEventListener("dragover", e => e.preventDefault());
+    window.addEventListener("drop", e => {
+      e.preventDefault();
+      if (e.dataTransfer.files.length > 0) {
+        processFile(e.dataTransfer.files[0]);
+      }
+    });
+
+    // ==========================================
+    // 篩選與渲染管線 (React-Like Data Stream)
+    // ==========================================
+    function initFilterOptions() {
+      const roles = ["ALL", ...new Set(state.surveyData.map(d => d.role).filter(Boolean))];
+      const frequencies = ["ALL", ...new Set(state.surveyData.map(d => d.frequency).filter(Boolean))];
+      
+      const roleSelect = document.getElementById("filter-role");
+      const freqSelect = document.getElementById("filter-frequency");
+      
+      roleSelect.innerHTML = "";
+      freqSelect.innerHTML = "";
+      
+      roles.forEach(r => {
+        const opt = document.createElement("option");
+        opt.value = r;
+        opt.innerText = r === "ALL" ? "🎯 所有職別對象" : r;
+        roleSelect.appendChild(opt);
+      });
+      
+      frequencies.forEach(f => {
+        const opt = document.createElement("option");
+        opt.value = f;
+        opt.innerText = f === "ALL" ? "⌛ 所有使用頻率" : f;
+        freqSelect.appendChild(opt);
+      });
+
+      // 恢復當前選擇的值
+      roleSelect.value = state.filterRole;
+      freqSelect.value = state.filterFrequency;
+    }
+
+    function updateFilters() {
+      state.filterRole = document.getElementById("filter-role").value;
+      state.filterFrequency = document.getElementById("filter-frequency").value;
+      state.searchTerm = document.getElementById("search-term").value;
+      
+      // 控制清除篩選按鈕顯示
+      const clearBtn = document.getElementById("btn-clear-filters");
+      if (state.filterRole !== "ALL" || state.filterFrequency !== "ALL" || state.searchTerm !== "") {
+        clearBtn.classList.remove("hidden");
+      } else {
+        clearBtn.classList.add("hidden");
+      }
+      
+      executeFilter();
+    }
+
+    function clearFilters() {
+      state.filterRole = "ALL";
+      state.filterFrequency = "ALL";
+      state.searchTerm = "";
+      
+      document.getElementById("filter-role").value = "ALL";
+      document.getElementById("filter-frequency").value = "ALL";
+      document.getElementById("search-term").value = "";
+      document.getElementById("btn-clear-filters").class = "hidden";
+      
+      executeFilter();
+    }
+
+    function executeFilter() {
+      state.filteredData = state.surveyData.filter(d => {
+        const matchRole = state.filterRole === "ALL" || d.role === state.filterRole;
+        const matchFreq = state.filterFrequency === "ALL" || d.frequency === state.filterFrequency;
+        
+        const combinedText = `${d.role} ${d.difficulty} ${d.expectSolve} ${d.whatIsAI} ${d.tools.join(" ")}`.toLowerCase();
+        const matchSearch = state.searchTerm === "" || combinedText.includes(state.searchTerm.toLowerCase());
+        
+        return matchRole && matchFreq && matchSearch;
+      });
+
+      renderCurrentTab();
+    }
+
+    // ==========================================
+    // 看板渲染子模組 (純 JS DOM 引擎)
+    // ==========================================
+    function renderCurrentTab() {
+      initFilterOptions(); // 保持選項最新
+      
+      // 計算 KPI
+      const total = state.filteredData.length;
+      const grandTotal = state.surveyData.length || 1;
+      
+      document.getElementById("kpi-total").innerText = total;
+      document.getElementById("kpi-pct").innerText = `佔總填答數據的 ${((total / grandTotal) * 100).toFixed(0)}%`;
+      
+      let totalEff = 0;
+      let dailyUsers = 0;
+      let hardObstacles = 0;
+      
+      state.filteredData.forEach(d => {
+        totalEff += d.efficiency;
+        if (d.frequency === "每天使用") dailyUsers++;
+        if (d.difficulty.includes("問診困難") || d.difficulty.includes("幻覺")) {
+          hardObstacles++;
+        }
+      });
+      
+      const avgEff = total > 0 ? (totalEff / total).toFixed(1) : "0.0";
+      const dailyUserPct = total > 0 ? ((dailyUsers / total) * 100).toFixed(0) : "0";
+      const painRatio = total > 0 ? ((hardObstacles / total) * 100).toFixed(0) : "0";
+      
+      document.getElementById("kpi-efficiency").innerText = avgEff;
+      document.getElementById("kpi-frequency").innerText = `${dailyUserPct}%`;
+      document.getElementById("kpi-pain").innerText = `${painRatio}%`;
+      
+      // 繪製 KPI 星星
+      const starsContainer = document.getElementById("kpi-stars");
+      const activeStarsCount = Math.round(parseFloat(avgEff) || 3);
+      starsContainer.innerHTML = "★".repeat(activeStarsCount) + "☆".repeat(5 - activeStarsCount);
+
+      if (state.activeTab === "dashboard") {
+        renderDashboardCharts();
+      } else if (state.activeTab === "matrix") {
+        renderMatrixHeatmap();
+      } else if (state.activeTab === "solutions") {
+        renderSolutionsTab();
+      } else if (state.activeTab === "rawData") {
+        renderRawDataTable();
+      }
+    }
+
+    // 1. 數據看板圖表渲染
+    function renderDashboardCharts() {
+      // (1) AI 工具統計
+      const toolCounts = {};
+      state.filteredData.forEach(d => d.tools.forEach(t => toolCounts[t] = (toolCounts[t] || 0) + 1));
+      const toolStats = Object.entries(toolCounts).map(([name, value]) => ({ name, value })).sort((a,b)=>b.value-a.value);
+      
+      const toolsChart = document.getElementById("chart-tools");
+      toolsChart.innerHTML = toolStats.length === 0 ? `<div class="text-center py-12 text-slate-500 text-xs">無匹配數據</div>` : "";
+      
+      const maxToolValue = Math.max(...toolStats.map(d => d.value)) || 1;
+      toolStats.forEach((item, index) => {
+        const ratio = (item.value / maxToolValue) * 100;
+        toolsChart.innerHTML += `
+          <div class="space-y-1.5 group">
+            <div class="flex justify-between text-xs sm:text-sm">
+              <span class="font-bold text-slate-300 group-hover:text-white transition">${index+1}. ${item.name}</span>
+              <span class="text-violet-400 font-black">${item.value} 票</span>
+            </div>
+            <div class="h-3 bg-slate-950 rounded-lg overflow-hidden p-0.5 border border-slate-850">
+              <div class="h-full bg-gradient-to-r from-violet-600 via-indigo-500 to-indigo-400 rounded-md shadow-[0_0_12px_rgba(139,92,246,0.3)] transition-all duration-1000" style="width: ${ratio}%"></div>
+            </div>
+          </div>
+        `;
+      });
+
+      // (2) 應用場景統計
+      const sceneCounts = {};
+      state.filteredData.forEach(d => d.scenarios.forEach(s => sceneCounts[s] = (sceneCounts[s] || 0) + 1));
+      const sceneStats = Object.entries(sceneCounts).map(([name, value]) => ({ name, value })).sort((a,b)=>b.value-a.value);
+      
+      const scenesChart = document.getElementById("chart-scenarios");
+      scenesChart.innerHTML = sceneStats.length === 0 ? `<div class="text-center py-12 text-slate-500 text-xs">無匹配數據</div>` : "";
+      
+      const maxSceneValue = Math.max(...sceneStats.map(d => d.value)) || 1;
+      sceneStats.forEach((item, index) => {
+        const ratio = (item.value / maxSceneValue) * 100;
+        scenesChart.innerHTML += `
+          <div class="space-y-1.5 group">
+            <div class="flex justify-between text-xs sm:text-sm">
+              <span class="font-bold text-slate-300 group-hover:text-white transition">${index+1}. ${item.name}</span>
+              <span class="text-fuchsia-400 font-black">${item.value} 票</span>
+            </div>
+            <div class="h-3 bg-slate-950 rounded-lg overflow-hidden p-0.5 border border-slate-850">
+              <div class="h-full bg-gradient-to-r from-fuchsia-600 via-pink-500 to-pink-400 rounded-md shadow-[0_0_12px_rgba(236,72,153,0.3)] transition-all duration-1000" style="width: ${ratio}%"></div>
+            </div>
+          </div>
+        `;
+      });
+
+      // (3) 痛點統計
+      const painCounts = {};
+      state.filteredData.forEach(d => painCounts[d.difficulty || "無特別困難"] = (painCounts[d.difficulty || "無特別困難"] || 0) + 1);
+      const painStats = Object.entries(painCounts).map(([name, value]) => ({ name, value })).sort((a,b)=>b.value-a.value);
+      
+      const obstaclesChart = document.getElementById("chart-obstacles");
+      obstaclesChart.innerHTML = painStats.length === 0 ? `<div class="text-center py-12 text-slate-500 text-xs">無匹配數據</div>` : "";
+      
+      const totalObstacles = painStats.reduce((acc, curr) => acc + curr.value, 0) || 1;
+      painStats.forEach((item) => {
+        const percent = ((item.value / totalObstacles) * 100).toFixed(0);
+        obstaclesChart.innerHTML += `
+          <div class="flex items-center space-x-4">
+            <div class="w-10 text-right"><span class="text-xs sm:text-sm font-black text-slate-400">${percent}%</span></div>
+            <div class="flex-1">
+              <div class="flex justify-between text-[11px] sm:text-xs mb-1">
+                <span class="text-slate-300 font-semibold">${item.name}</span>
+                <span class="text-slate-500 font-bold">${item.value} 人</span>
+              </div>
+              <div class="h-2 bg-slate-950 rounded-full overflow-hidden p-0.5">
+                <div class="h-full bg-gradient-to-r from-pink-500 to-rose-500 rounded-full" style="width: ${percent}%"></div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      // (4) SVG Donut 更新
+      const totalNum = state.filteredData.length || 1;
+      const nbCount = state.filteredData.filter(d => d.notebookLM.includes("是") || d.notebookLM.includes("用過")).length;
+      const vsCount = state.filteredData.filter(d => d.visualTool === "是" || d.visualTool.includes("用過")).length;
+      
+      const nbRatio = ((nbCount / totalNum) * 100).toFixed(0);
+      const vsRatio = ((vsCount / totalNum) * 100).toFixed(0);
+      
+      document.getElementById("donut-val-notebook").innerText = `${nbRatio}%`;
+      document.getElementById("donut-val-visual").innerText = `${vsRatio}%`;
+      
+      document.getElementById("ring-notebooklm").setAttribute("stroke-dasharray", `${nbRatio}, 100`);
+      document.getElementById("ring-visual").setAttribute("stroke-dasharray", `${vsRatio}, 100`);
+
+      // (5) 金句牆更新
+      const quotesBox = document.getElementById("quotes-container");
+      quotesBox.innerHTML = "";
+      state.filteredData.forEach(d => {
+        if (!d.whatIsAI || d.whatIsAI === "無" || d.whatIsAI === "無特別困難") return;
+        quotesBox.innerHTML += `
+          <div class="p-4 rounded-xl bg-slate-950/60 border border-slate-850 hover:border-violet-500/40 transition flex flex-col justify-between space-y-4 shadow-md">
+            <p class="text-xs sm:text-sm text-slate-200 font-medium leading-relaxed italic">" ${d.whatIsAI} "</p>
+            <div class="flex justify-between items-center text-[10px] text-slate-500 font-bold pt-2 border-t border-slate-900">
+              <span>職別: ${d.role}</span>
+              <span>頻率: ${d.frequency}</span>
+            </div>
+          </div>
+        `;
+      });
+      if (quotesBox.innerHTML === "") {
+        quotesBox.innerHTML = `<div class="col-span-full text-center py-12 text-slate-600 text-xs font-bold">無金句心聲數據</div>`;
+      }
+    }
+
+    // 2. 交叉分析熱圖矩陣
+    function updateMatrix() {
+      state.matrixX = document.getElementById("matrix-x").value;
+      state.matrixY = document.getElementById("matrix-y").value;
+      renderMatrixHeatmap();
+    }
+
+    function renderMatrixHeatmap() {
+      const getXKey = (d) => d[state.matrixX];
+      const getYKey = (d) => {
+        if (state.matrixY === "tools") return d.tools;
+        return [d[state.matrixY]];
+      };
+
+      const xValues = Array.from(new Set(state.filteredData.map(getXKey).filter(Boolean)));
+      let yValuesSet = new Set();
+      state.filteredData.forEach(d => getYKey(d).forEach(val => yValuesSet.add(val)));
+      const yValues = Array.from(yValuesSet).filter(Boolean);
+
+      // 初始化表格二維矩陣
+      const grid = {};
+      xValues.forEach(x => {
+        grid[x] = {};
+        yValues.forEach(y => grid[x][y] = 0);
+      });
+
+      // 累加填值
+      state.filteredData.forEach(d => {
+        const xVal = getXKey(d);
+        const yVals = getYKey(d);
+        if (xVal) {
+          yVals.forEach(yVal => {
+            if (grid[xVal] && grid[xVal][yVal] !== undefined) {
+              grid[xVal][yVal]++;
+            }
+          });
+        }
+      });
+
+      // 拼裝 HTML Table
+      const mTable = document.getElementById("matrix-table");
+      
+      // 表頭
+      let thead = `<tr class="bg-slate-950 border-b border-slate-850">
+        <th class="p-4 font-black text-slate-400 uppercase tracking-widest border-r border-slate-850 w-48">Y \\ X 軸</th>`;
+      xValues.forEach(x => {
+        thead += `<th class="p-4 font-bold text-slate-300 min-w-[120px] text-center">${x}</th>`;
+      });
+      thead += "</tr>";
+
+      // 表體
+      let tbody = "";
+      yValues.forEach(y => {
+        tbody += `<tr class="border-b border-slate-850 hover:bg-slate-900/30">
+          <td class="p-4 font-bold text-slate-300 border-r border-slate-850 w-48 truncate max-w-[200px]" title="${y}">${y}</td>`;
+        
+        xValues.forEach(x => {
+          const count = grid[x]?.[y] || 0;
+          // 計算這一欄位的最高密度以動態調整背景顏色深度
+          const maxInCol = Math.max(...yValues.map(item => grid[x]?.[item] || 0)) || 1;
+          const intensity = count > 0 ? (count / maxInCol) : 0;
+          
+          let styleAttr = "";
+          if (intensity > 0) {
+            styleAttr = `style="background-color: rgba(99, 102, 241, ${0.1 + intensity * 0.7}); text-shadow: 0 0 6px rgba(0,0,0,0.5);"`;
+          }
+          
+          tbody += `<td ${styleAttr} class="p-4 text-center font-black transition-colors duration-200">
+            <span class="${count > 0 ? 'text-white text-sm' : 'text-slate-700'}">${count}</span>
+          </td>`;
+        });
+        tbody += "</tr>";
+      });
+
+      mTable.innerHTML = thead + `<tbody>${tbody}</tbody>`;
+    }
+
+    // 3. 課程建議報告渲染
+    function generateReportString() {
+      // 算出核心資訊
+      const toolCounts = {};
+      state.filteredData.forEach(d => d.tools.forEach(t => toolCounts[t] = (toolCounts[t] || 0) + 1));
+      const sortedTools = Object.entries(toolCounts).sort((a,b)=>b.value-a.value);
+      const topTool = sortedTools[0]?.[0] || "無";
+
+      const painCounts = {};
+      state.filteredData.forEach(d => painCounts[d.difficulty] = (painCounts[d.difficulty] || 0) + 1);
+      const sortedPains = Object.entries(painCounts).sort((a,b)=>b.value-a.value);
+      const topPain = sortedPains[0]?.[0] || "無特別困難";
+
+      const nbNever = state.filteredData.filter(d => d.notebookLM.includes("從未") || d.notebookLM.includes("不會用")).length;
+      const totalNum = state.filteredData.length || 1;
+      const nbRatio = ((nbNever / totalNum) * 100).toFixed(0);
+
+      return `【AntigravityIDE 課程策略分析報告】
+產出時間：2026/05/30 
+分析學員規模：${state.filteredData.length} 人
+核心洞察剖析：
+1. 學員痛點之首為「${topPain}」，顯示學員的最大挫折往往來自生成式 AI 回覆的不夠精準，不信任或是無法操控提問。
+2. 常用工具佔比最高者為「${topTool}」，這可做為教學現場演示時的熱點案例基礎，共鳴最高。
+3. 進階文件標註與知識管理工具 (NotebookLM) 有高達 ${nbRatio}% 的學員屬於完全不熟悉或未使用過，這具有極高的教學WOW點增長空間。
+
+講師專屬應戰教案建議：
+• 第一模組：如何避免「一本正經胡說八道」。現場需安排 15 分鐘介紹 ChatGPT / Gemini 限制範圍 (Constraints) 的提示詞語意範式。
+• 第二模組：NotebookLM 大閱兵。以多篇產品規格書或資安政策文件做實測，證明「100% 只在來源內回答」的穩定性。
+• 第三模組： Napkin AI 整合。現場帶領學員練習「文案一鍵解構成圖解」，打破傳統簡報繪圖耗時限制。`;
+    }
+
+    function renderSolutionsTab() {
+      const tbody = document.getElementById("demo-tasks-tbody");
+      tbody.innerHTML = "";
+      
+      const targets = state.surveyData.filter(d => d.boringTask && d.boringTask.includes("願意"));
+      targets.forEach(d => {
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-900/30 transition-colors">
+            <td class="p-4 font-bold text-slate-200">${d.role}</td>
+            <td class="p-4 text-slate-400">${d.tools.join(", ")}</td>
+            <td class="p-4 font-semibold text-violet-300">${d.expectSolve || "解讀特定複雜規格書或報表查錯"}</td>
+            <td class="p-4 text-center">
+              <span class="inline-flex items-center px-2 py-1 rounded bg-violet-500/15 text-violet-300 border border-violet-500/30 font-bold text-[10px]">
+                ${d.boringTask}
+              </span>
+            </td>
+          </tr>
+        `;
+      });
+      
+      if (tbody.innerHTML === "") {
+        tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-600 font-bold text-xs">無學員提供雞肋任務</td></tr>`;
+      }
+    }
+
+    function copyInstructorReport() {
+      const report = generateReportString();
+      // 使用相容性最高的 execCommand 確保可在 Sandboxed 瀏覽器正常運作
+      const textarea = document.createElement("textarea");
+      textarea.value = report;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+      
+      showToast("複製策略報告成功！您可以直接黏貼發送給講師團隊。");
+    }
+
+    // 4. 原始數據列表
+    function renderRawDataTable() {
+      document.getElementById("raw-total-desc").innerText = `目前清單共包含 ${state.filteredData.length} 筆資料`;
+      const tbody = document.getElementById("raw-data-tbody");
+      tbody.innerHTML = "";
+      
+      state.filteredData.forEach(d => {
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-900/30 transition-colors">
+            <td class="p-4 text-slate-600 whitespace-nowrap">${d.timestamp}</td>
+            <td class="p-4 font-bold text-white whitespace-nowrap">${d.role}</td>
+            <td class="p-4 text-violet-400 whitespace-nowrap">${d.tools.join(", ")}</td>
+            <td class="p-4 text-slate-400 whitespace-nowrap">${d.frequency}</td>
+            <td class="p-4 font-black text-amber-400 whitespace-nowrap">${d.efficiency} ★</td>
+            <td class="p-4 font-black text-indigo-400 whitespace-nowrap">${d.promptSkill} 分</td>
+            <td class="p-4 text-slate-400 whitespace-nowrap">${d.notebookLM}</td>
+            <td class="p-4 text-pink-300 truncate max-w-[200px]" title="${d.difficulty}">${d.difficulty}</td>
+            <td class="p-4 text-slate-300 font-medium truncate max-w-[200px]" title="${d.expectSolve}">${d.expectSolve || "無"}</td>
+          </tr>
+        `;
+      });
+      
+      if (tbody.innerHTML === "") {
+        tbody.innerHTML = `<tr><td colspan="9" class="p-8 text-center text-slate-600 font-black">無符合當前條件之數據</td></tr>`;
+      }
+    }
+
+    // ==========================================
+    // 首次初始化
+    // ==========================================
+    window.onload = function() {
+      // 觸發初始過濾並渲染
+      executeFilter();
+    };
+  </script>
+</body>
+</html>
