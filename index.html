@@ -12,55 +12,55 @@
     body {
       font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif;
     }
-    /* 質感滾動條 */
+    /* 質感淺色滾動條 */
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
     }
     ::-webkit-scrollbar-track {
-      background: #020617;
+      background: #f1f5f9;
     }
     ::-webkit-scrollbar-thumb {
-      background: #1e1b4b;
+      background: #cbd5e1;
       border-radius: 4px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: #4f46e5;
+      background: #94a3b8;
     }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen selection:bg-violet-600 selection:text-white">
+<body class="bg-slate-50 text-slate-800 min-h-screen selection:bg-indigo-600 selection:text-white">
 
   <!-- 頂部導覽列 -->
-  <header class="border-b border-slate-800 bg-slate-900/60 backdrop-blur sticky top-0 z-50">
+  <header class="border-b border-slate-200 bg-white/80 backdrop-blur sticky top-0 z-50 shadow-sm shadow-slate-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 py-3.5 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div class="flex items-center space-x-3.5">
-        <div class="relative p-2.5 bg-slate-950 rounded-xl text-white border border-slate-800">
-          <svg class="w-6 h-6 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div class="relative p-2.5 bg-slate-50 rounded-xl text-indigo-600 border border-slate-200 shadow-sm">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 3.055A9.003 9.003 0 1020.945 13H11V3.055z" />
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
           </svg>
         </div>
         <div>
-          <h1 class="text-lg font-black tracking-wider bg-gradient-to-r from-violet-400 via-indigo-300 to-cyan-300 bg-clip-text text-transparent">
+          <h1 class="text-lg font-black tracking-wider bg-gradient-to-r from-indigo-700 via-indigo-600 to-violet-700 bg-clip-text text-transparent">
             ANTIGRAVITY IDE
           </h1>
-          <p class="text-[11px] text-slate-400 font-semibold uppercase tracking-widest">學員回覆分析與課程策略羅盤</p>
+          <p class="text-[11px] text-slate-500 font-bold uppercase tracking-widest">學員回覆分析與課程策略羅盤</p>
         </div>
       </div>
 
       <!-- 導覽分頁按鈕 -->
-      <nav class="flex space-x-1 bg-slate-950/60 p-1 rounded-xl border border-slate-800">
-        <button onclick="switchTab('dashboard')" id="btn-dashboard" class="px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold tracking-wide transition-all duration-300 bg-violet-600 text-white shadow-lg">
+      <nav class="flex space-x-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
+        <button onclick="switchTab('dashboard')" id="btn-dashboard" class="px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold tracking-wide transition-all duration-300 bg-indigo-600 text-white shadow-md shadow-indigo-600/10">
           📊 數據看板
         </button>
-        <button onclick="switchTab('matrix')" id="btn-matrix" class="px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold tracking-wide transition-all duration-300 text-slate-400 hover:text-white hover:bg-slate-900">
+        <button onclick="switchTab('matrix')" id="btn-matrix" class="px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold tracking-wide transition-all duration-300 text-slate-600 hover:text-slate-900 hover:bg-slate-200/50">
           🧩 交叉分析
         </button>
-        <button onclick="switchTab('solutions')" id="btn-solutions" class="px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold tracking-wide transition-all duration-300 text-slate-400 hover:text-white hover:bg-slate-900">
+        <button onclick="switchTab('solutions')" id="btn-solutions" class="px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold tracking-wide transition-all duration-300 text-slate-600 hover:text-slate-900 hover:bg-slate-200/50">
           💡 課程策略
         </button>
-        <button onclick="switchTab('rawData')" id="btn-rawData" class="px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold tracking-wide transition-all duration-300 text-slate-400 hover:text-white hover:bg-slate-900">
+        <button onclick="switchTab('rawData')" id="btn-rawData" class="px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold tracking-wide transition-all duration-300 text-slate-600 hover:text-slate-900 hover:bg-slate-200/50">
           📋 原始數據
         </button>
       </nav>
@@ -70,29 +70,29 @@
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
     
     <!-- 拖放上傳區 -->
-    <section class="bg-slate-900/40 border border-slate-800 rounded-3xl p-6 backdrop-blur-md relative overflow-hidden group">
-      <div class="absolute -inset-x-20 -top-40 h-80 bg-violet-600/5 rounded-full blur-3xl pointer-events-none" />
+    <section class="bg-white border border-slate-200 rounded-3xl p-6 relative overflow-hidden group shadow-sm shadow-slate-100">
+      <div class="absolute -inset-x-20 -top-40 h-80 bg-indigo-50/40 rounded-full blur-3xl pointer-events-none" />
       <div class="relative flex flex-col md:flex-row items-center justify-between gap-6">
         <div class="space-y-2 text-center md:text-left flex-1">
-          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-black bg-violet-500/10 text-violet-300 border border-violet-500/30 uppercase tracking-widest">
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-black bg-indigo-50 text-indigo-700 border border-indigo-200 uppercase tracking-widest">
             即時解析系統 Ready
           </span>
-          <h2 class="text-xl sm:text-2xl font-black text-white tracking-tight">問卷 CSV 檔案動態解析儀</h2>
-          <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">
-            目前使用來源：<span id="loaded-file-name" class="text-indigo-400 font-mono font-bold underline bg-indigo-950/20 px-2 py-0.5 rounded">系統預設高品質真實回覆模擬集</span>。
+          <h2 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">問卷 CSV 檔案動態解析儀</h2>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+            目前使用來源：<span id="loaded-file-name" class="text-indigo-700 font-mono font-bold bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded">系統預設高品質真實回覆模擬集</span>。
             拖曳任何您的問卷 CSV 回覆檔案到網頁中，圖表會在微秒內極速重畫！
           </p>
         </div>
 
         <div class="w-full md:w-auto shrink-0" id="drop-zone">
-          <label class="flex flex-col items-center justify-center px-8 py-4 bg-slate-900 hover:bg-slate-850 border-2 border-dashed border-slate-800 hover:border-violet-500/50 rounded-2xl cursor-pointer transition-all duration-300 text-center">
+          <label class="flex flex-col items-center justify-center px-8 py-4 bg-slate-50 hover:bg-slate-100 border-2 border-dashed border-slate-200 hover:border-indigo-400 rounded-2xl cursor-pointer transition-all duration-300 text-center">
             <div class="flex items-center space-x-2.5">
-              <svg class="w-5 h-5 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg class="w-5 h-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
               </svg>
-              <span class="text-xs sm:text-sm font-black text-white">點擊或拖放您的問卷 CSV</span>
+              <span class="text-xs sm:text-sm font-black text-slate-800">點擊或拖放您的問卷 CSV</span>
             </div>
-            <span class="text-[10px] text-slate-500 mt-1.5 font-semibold">支援萬用欄位語意配對演算法</span>
+            <span class="text-[10px] text-slate-400 mt-1.5 font-bold">支援萬用欄位語意配對演算法</span>
             <input type="file" id="file-input" accept=".csv" class="hidden" onchange="handleFileSelect(event)" />
           </label>
         </div>
@@ -100,11 +100,11 @@
     </section>
 
     <!-- 篩選控制面板 -->
-    <section class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 shadow-xl flex flex-col md:flex-row items-center justify-between gap-5 relative">
+    <section class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm shadow-slate-100 flex flex-col md:flex-row items-center justify-between gap-5 relative">
       <div class="flex items-start space-x-3 w-full md:w-auto">
-        <div class="text-xl p-2 bg-indigo-500/10 rounded-lg text-indigo-400">⚡</div>
+        <div class="text-xl p-2 bg-indigo-50 rounded-lg text-indigo-600 border border-indigo-100">⚡</div>
         <div>
-          <h3 class="font-bold text-white text-sm sm:text-base">全域變數篩選控制盤</h3>
+          <h3 class="font-bold text-slate-900 text-sm sm:text-base">全域變數篩選控制盤</h3>
           <p class="text-xs text-slate-500 leading-relaxed mt-0.5">篩選條件會同步更新所有分頁下的統計數值</p>
         </div>
       </div>
@@ -112,14 +112,14 @@
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full md:w-auto flex-1 max-w-3xl">
         <div class="flex flex-col">
           <label class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">對象職務類別</label>
-          <select id="filter-role" onchange="updateFilters()" class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500 transition">
+          <select id="filter-role" onchange="updateFilters()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
             <option value="ALL">🎯 所有職別對象</option>
           </select>
         </div>
 
         <div class="flex flex-col">
           <label class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">AI 工具使用頻率</label>
-          <select id="filter-frequency" onchange="updateFilters()" class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500 transition">
+          <select id="filter-frequency" onchange="updateFilters()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
             <option value="ALL">⌛ 所有使用頻率</option>
           </select>
         </div>
@@ -127,13 +127,13 @@
         <div class="flex flex-col">
           <label class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">模糊全文搜索</label>
           <div class="relative">
-            <input type="text" id="search-term" oninput="updateFilters()" placeholder="輸入關鍵字..." class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-8 pr-3 py-2 text-xs sm:text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-violet-500" />
-            <span class="absolute left-2.5 top-2.5 text-xs text-slate-500">🔍</span>
+            <input type="text" id="search-term" oninput="updateFilters()" placeholder="輸入關鍵字..." class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-3 py-2 text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            <span class="absolute left-2.5 top-2.5 text-xs text-slate-400">🔍</span>
           </div>
         </div>
       </div>
 
-      <button id="btn-clear-filters" onclick="clearFilters()" class="hidden text-xs font-bold text-pink-400 hover:text-pink-300 hover:underline shrink-0">
+      <button id="btn-clear-filters" onclick="clearFilters()" class="hidden text-xs font-bold text-pink-600 hover:text-pink-700 hover:underline shrink-0">
         清除所有條件
       </button>
     </section>
@@ -143,63 +143,63 @@
       
       <!-- KPI 指標計量卡 -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl relative overflow-hidden group hover:border-violet-500/30 transition">
+        <div class="bg-white border border-slate-200 p-6 rounded-2xl relative overflow-hidden group hover:border-indigo-400 hover:shadow-md transition duration-300">
           <p class="text-[10px] text-slate-400 font-black tracking-widest uppercase">篩選後樣本規模</p>
           <div class="flex items-baseline space-x-1.5 mt-2">
-            <span id="kpi-total" class="text-3xl font-black text-white">0</span>
-            <span class="text-xs text-slate-500">人填答</span>
+            <span id="kpi-total" class="text-3xl font-black text-slate-900">0</span>
+            <span class="text-xs text-slate-500 font-bold">人填答</span>
           </div>
-          <p id="kpi-pct" class="text-xs text-slate-400 mt-3">佔總填答數據的 100%</p>
+          <p id="kpi-pct" class="text-xs text-slate-500 mt-3 font-medium">佔總填答數據的 100%</p>
         </div>
 
-        <div class="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl relative overflow-hidden group hover:border-indigo-500/30 transition">
+        <div class="bg-white border border-slate-200 p-6 rounded-2xl relative overflow-hidden group hover:border-indigo-400 hover:shadow-md transition duration-300">
           <p class="text-[10px] text-slate-400 font-black tracking-widest uppercase">重度使用比例</p>
           <div class="flex items-baseline space-x-1.5 mt-2">
-            <span id="kpi-frequency" class="text-3xl font-black text-white">0%</span>
+            <span id="kpi-frequency" class="text-3xl font-black text-slate-900">0%</span>
           </div>
-          <p class="text-xs text-slate-400 mt-3">每日深度綁定工作流之比例</p>
+          <p class="text-xs text-slate-500 mt-3 font-medium">每日深度綁定工作流之比例</p>
         </div>
 
-        <div class="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl relative overflow-hidden group hover:border-fuchsia-500/30 transition">
+        <div class="bg-white border border-slate-200 p-6 rounded-2xl relative overflow-hidden group hover:border-indigo-400 hover:shadow-md transition duration-300">
           <p class="text-[10px] text-slate-400 font-black tracking-widest uppercase">平均執行效率提升</p>
           <div class="flex items-baseline space-x-1.5 mt-2">
-            <span id="kpi-efficiency" class="text-3xl font-black text-white">0.0</span>
-            <span class="text-xs text-slate-500">/ 5.0 分</span>
+            <span id="kpi-efficiency" class="text-3xl font-black text-slate-900">0.0</span>
+            <span class="text-xs text-slate-500 font-bold">/ 5.0 分</span>
           </div>
-          <div id="kpi-stars" class="mt-2 text-amber-400 text-xs"></div>
+          <div id="kpi-stars" class="mt-2 text-amber-500 text-xs tracking-wider"></div>
         </div>
 
-        <div class="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl relative overflow-hidden group hover:border-cyan-500/30 transition">
+        <div class="bg-white border border-slate-200 p-6 rounded-2xl relative overflow-hidden group hover:border-indigo-400 hover:shadow-md transition duration-300">
           <p class="text-[10px] text-slate-400 font-black tracking-widest uppercase">提問痛點集中度</p>
           <div class="flex items-baseline space-x-1.5 mt-2">
-            <span id="kpi-pain" class="text-3xl font-black text-pink-400">0%</span>
+            <span id="kpi-pain" class="text-3xl font-black text-pink-600">0%</span>
           </div>
-          <p class="text-xs text-slate-400 mt-3">苦於幻覺與問診下提示詞困難</p>
+          <p class="text-xs text-slate-500 mt-3 font-medium">苦於幻覺與問診下提示詞困難</p>
         </div>
       </div>
 
       <!-- 圖表區一：工具與場景 -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- 常用 AI 工具排行 -->
-        <div class="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl shadow-xl space-y-6">
-          <div class="flex items-center justify-between border-b border-slate-800/60 pb-3">
-            <h4 class="font-bold text-white text-sm sm:text-base flex items-center space-x-2">
-              <span class="w-2 h-2 rounded-full bg-violet-500" />
+        <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm shadow-slate-100 space-y-6">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <h4 class="font-bold text-slate-900 text-sm sm:text-base flex items-center space-x-2">
+              <span class="w-2 h-2 rounded-full bg-indigo-600" />
               <span>當前使用 AI 工具佔有率排行</span>
             </h4>
-            <span class="text-[10px] text-slate-500 font-bold uppercase">可複選</span>
+            <span class="text-[10px] text-slate-400 font-bold uppercase">可複選</span>
           </div>
           <div id="chart-tools" class="space-y-4"></div>
         </div>
 
         <!-- 應用場景需求 -->
-        <div class="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl shadow-xl space-y-6">
-          <div class="flex items-center justify-between border-b border-slate-800/60 pb-3">
-            <h4 class="font-bold text-white text-sm sm:text-base flex items-center space-x-2">
-              <span class="w-2 h-2 rounded-full bg-fuchsia-500" />
+        <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm shadow-slate-100 space-y-6">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <h4 class="font-bold text-slate-900 text-sm sm:text-base flex items-center space-x-2">
+              <span class="w-2 h-2 rounded-full bg-pink-600" />
               <span>亟待優化之工作應用場景</span>
             </h4>
-            <span class="text-[10px] text-slate-500 font-bold uppercase">需求強度排序</span>
+            <span class="text-[10px] text-slate-400 font-bold uppercase">需求強度排序</span>
           </div>
           <div id="chart-scenarios" class="space-y-4"></div>
         </div>
@@ -208,10 +208,10 @@
       <!-- 困難痛點 與 進階工具熟悉度 (環狀圖) -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- 困難痛點 -->
-        <div class="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl shadow-xl lg:col-span-2 space-y-5">
-          <div class="border-b border-slate-800/60 pb-3">
-            <h4 class="font-bold text-white text-sm sm:text-base flex items-center space-x-2">
-              <span class="w-2 h-2 rounded-full bg-pink-500" />
+        <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm shadow-slate-100 lg:col-span-2 space-y-5">
+          <div class="border-b border-slate-100 pb-3">
+            <h4 class="font-bold text-slate-900 text-sm sm:text-base flex items-center space-x-2">
+              <span class="w-2 h-2 rounded-full bg-rose-500" />
               <span>學員使用 AI 之最大困難痛點分佈</span>
             </h4>
           </div>
@@ -219,11 +219,11 @@
         </div>
 
         <!-- 穿透率 Donut SVG -->
-        <div class="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col justify-between">
+        <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm shadow-slate-100 flex flex-col justify-between">
           <div class="space-y-5">
-            <div class="border-b border-slate-800/60 pb-3">
-              <h4 class="font-bold text-white text-sm sm:text-base flex items-center space-x-2">
-                <span class="w-2 h-2 rounded-full bg-cyan-400" />
+            <div class="border-b border-slate-100 pb-3">
+              <h4 class="font-bold text-slate-900 text-sm sm:text-base flex items-center space-x-2">
+                <span class="w-2 h-2 rounded-full bg-cyan-600" />
                 <span>進階授課工具穿透率</span>
               </h4>
             </div>
@@ -233,43 +233,43 @@
               <div class="flex flex-col items-center space-y-2">
                 <div class="relative w-24 h-24">
                   <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-                    <path class="text-slate-800" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                    <path id="ring-notebooklm" class="text-cyan-400 transition-all duration-1000" stroke-width="3.5" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    <path class="text-slate-100" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    <path id="ring-notebooklm" class="text-cyan-600 transition-all duration-1000" stroke-width="3.5" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
                   </svg>
                   <div class="absolute inset-0 flex flex-col items-center justify-center">
-                    <span id="donut-val-notebook" class="text-lg font-black text-white">0%</span>
-                    <span class="text-[9px] text-slate-500 font-bold uppercase">使用過</span>
+                    <span id="donut-val-notebook" class="text-lg font-black text-slate-900">0%</span>
+                    <span class="text-[9px] text-slate-400 font-bold uppercase">使用過</span>
                   </div>
                 </div>
-                <span class="text-xs text-slate-300 font-bold">NotebookLM</span>
+                <span class="text-xs text-slate-700 font-bold">NotebookLM</span>
               </div>
 
               <!-- Napkin AI -->
               <div class="flex flex-col items-center space-y-2">
                 <div class="relative w-24 h-24">
                   <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-                    <path class="text-slate-800" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                    <path id="ring-visual" class="text-fuchsia-400 transition-all duration-1000" stroke-width="3.5" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    <path class="text-slate-100" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    <path id="ring-visual" class="text-pink-600 transition-all duration-1000" stroke-width="3.5" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
                   </svg>
                   <div class="absolute inset-0 flex flex-col items-center justify-center">
-                    <span id="donut-val-visual" class="text-lg font-black text-white">0%</span>
-                    <span class="text-[9px] text-slate-500 font-bold uppercase">曾嘗試</span>
+                    <span id="donut-val-visual" class="text-lg font-black text-slate-900">0%</span>
+                    <span class="text-[9px] text-slate-400 font-bold uppercase">曾嘗試</span>
                   </div>
                 </div>
-                <span class="text-xs text-slate-300 font-bold">圖解工具 (Napkin)</span>
+                <span class="text-xs text-slate-700 font-bold">圖解工具 (Napkin)</span>
               </div>
             </div>
           </div>
-          <div class="mt-4 pt-4 border-t border-slate-800/60 text-[10px] text-slate-500 text-center font-bold">
+          <div class="mt-4 pt-4 border-t border-slate-100 text-[10px] text-slate-400 text-center font-bold">
             ⚠️ 穿透率低代表本次課程之 NotebookLM 知識管理與 Napkin 視覺化將極具震撼效果。
           </div>
         </div>
       </div>
 
       <!-- 心聲金句牆 -->
-      <div class="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl shadow-xl space-y-6">
-        <div class="border-b border-slate-800/60 pb-3">
-          <h4 class="font-bold text-white text-sm sm:text-base flex items-center space-x-2">
+      <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm shadow-slate-100 space-y-6">
+        <div class="border-b border-slate-100 pb-3">
+          <h4 class="font-bold text-slate-900 text-sm sm:text-base flex items-center space-x-2">
             <span>💬</span>
             <span>「AI 對我而言是什麼？」學員心聲極速探照</span>
           </h4>
@@ -281,25 +281,25 @@
 
     <!-- 分頁二: 交叉分析 -->
     <div id="tab-matrix" class="hidden space-y-8">
-      <div class="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl shadow-xl space-y-6">
-        <div class="border-b border-slate-800/60 pb-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm shadow-slate-100 space-y-6">
+        <div class="border-b border-slate-100 pb-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
-            <h3 class="text-xl font-bold text-white">🧩 互動式多維交叉熱圖矩陣</h3>
-            <p class="text-xs text-slate-400 mt-1">隨心切換 X 與 Y 軸之特徵維度，透視各職級在使用偏好上的隱性關聯</p>
+            <h3 class="text-xl font-bold text-slate-900">🧩 互動式多維交叉熱圖矩陣</h3>
+            <p class="text-xs text-slate-500 mt-1">隨心切換 X 與 Y 軸之特徵維度，透視各職級在使用偏好上的隱性關聯</p>
           </div>
 
           <div class="flex flex-wrap items-center gap-3">
             <div class="flex items-center space-x-2">
-              <span class="text-xs text-slate-500 font-bold">X軸對應:</span>
-              <select id="matrix-x" onchange="updateMatrix()" class="bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1 text-xs text-slate-300 focus:outline-none">
+              <span class="text-xs text-slate-400 font-bold">X軸對應:</span>
+              <select id="matrix-x" onchange="updateMatrix()" class="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1 text-xs text-slate-700 focus:outline-none">
                 <option value="role">1. 職務類別</option>
                 <option value="frequency">3. AI 使用頻率</option>
               </select>
             </div>
 
             <div class="flex items-center space-x-2">
-              <span class="text-xs text-slate-500 font-bold">Y軸對應:</span>
-              <select id="matrix-y" onchange="updateMatrix()" class="bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1 text-xs text-slate-300 focus:outline-none">
+              <span class="text-xs text-slate-400 font-bold">Y軸對應:</span>
+              <select id="matrix-y" onchange="updateMatrix()" class="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1 text-xs text-slate-700 focus:outline-none">
                 <option value="difficulty">9. 面臨最大困難</option>
                 <option value="tools">2. 最常使用 AI 工具</option>
                 <option value="notebookLM">7. NotebookLM 經驗</option>
@@ -309,7 +309,7 @@
         </div>
 
         <!-- 熱圖表格 -->
-        <div class="overflow-x-auto border border-slate-850 rounded-xl bg-slate-950/60">
+        <div class="overflow-x-auto border border-slate-200 rounded-xl bg-white">
           <table id="matrix-table" class="min-w-full text-left text-xs border-collapse"></table>
         </div>
       </div>
@@ -317,37 +317,37 @@
 
     <!-- 分頁三: 課程策略 -->
     <div id="tab-solutions" class="hidden space-y-8">
-      <div class="bg-slate-900/40 border border-slate-800 rounded-3xl p-6 shadow-xl relative overflow-hidden">
-        <div class="absolute top-0 right-0 p-8 text-slate-800/10 font-bold text-9xl select-none leading-none">REPORT</div>
+      <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm shadow-slate-100 relative overflow-hidden">
+        <div class="absolute top-0 right-0 p-8 text-slate-100 font-bold text-9xl select-none leading-none">REPORT</div>
         
         <div class="relative space-y-6">
-          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
             <div>
-              <h3 class="text-2xl font-black bg-gradient-to-r from-violet-400 via-indigo-300 to-fuchsia-300 bg-clip-text text-transparent">AI 智能教案策畫與簡報作戰大綱</h3>
-              <p class="text-slate-400 text-xs mt-1">基於當前篩選數據，智能生成給講師團隊的簡報切入方向</p>
+              <h3 class="text-2xl font-black bg-gradient-to-r from-indigo-700 via-indigo-600 to-violet-700 bg-clip-text text-transparent">AI 智能教案策畫與簡報作戰大綱</h3>
+              <p class="text-slate-500 text-xs mt-1">基於當前篩選數據，智能生成給講師團隊的簡報切入方向</p>
             </div>
-            <button onclick="copyInstructorReport()" class="shrink-0 flex items-center space-x-2 bg-violet-600 hover:bg-violet-700 text-white font-bold px-4 py-2 rounded-xl text-xs sm:text-sm transition-all shadow-lg">
+            <button onclick="copyInstructorReport()" class="shrink-0 flex items-center space-x-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-4 py-2 rounded-xl text-xs sm:text-sm transition-all shadow-md">
               <span>📋 複製講師策略報告</span>
             </button>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="p-6 rounded-2xl bg-slate-950/60 border border-slate-850 space-y-3.5">
+            <div class="p-6 rounded-2xl bg-slate-50 border border-slate-100 space-y-3.5">
               <div class="text-2xl">🔥</div>
-              <h4 class="text-base sm:text-lg font-black text-white">攻堅對策一：如何破除幻覺與下精準提示詞</h4>
-              <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">分析中「幻覺問題」與「提示詞問診」比例極高。這顯示出學員常用 ChatGPT，但多停留在淺層詢問。</p>
-              <div class="p-3.5 rounded-xl bg-violet-950/20 border border-violet-900/40 text-xs text-violet-300 space-y-1.5 leading-relaxed">
+              <h4 class="text-base sm:text-lg font-black text-slate-900">攻堅對策一：如何破除幻覺與下精準提示詞</h4>
+              <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">分析中「幻覺問題」與「提示詞問診」比例極高。這顯示出學員常用 ChatGPT，但多停留在淺層詢問。</p>
+              <div class="p-3.5 rounded-xl bg-violet-50 border border-violet-100 text-xs text-violet-700 space-y-1.5 leading-relaxed">
                 <p class="font-bold">🎯 講師授課切入指引：</p>
                 <p>1. **ChatGPT & Gemini**：不要只教聊天，現場演示「結構化 Prompt 框架 (RTFC 框架)」與「預設定義問診模型」。</p>
                 <p>2. 提供「少樣本 (Few-shot) 投餵技術」，現場比較有下限制與無限制之回覆差距。</p>
               </div>
             </div>
 
-            <div class="p-6 rounded-2xl bg-slate-950/60 border border-slate-850 space-y-3.5">
+            <div class="p-6 rounded-2xl bg-slate-50 border border-slate-100 space-y-3.5">
               <div class="text-2xl">⚡</div>
-              <h4 class="text-base sm:text-lg font-black text-white">攻堅對策二：高WOW點 NotebookLM 標註與視覺化圖解</h4>
-              <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">NotebookLM 與 Napkin AI 有大量學員處於「未聽過、不熟悉」的狀態。這具有最高的教學溢價與體驗反差。</p>
-              <div class="p-3.5 rounded-xl bg-cyan-950/20 border border-cyan-900/40 text-xs text-cyan-300 space-y-1.5 leading-relaxed">
+              <h4 class="text-base sm:text-lg font-black text-slate-900">攻堅對策二：高WOW點 NotebookLM 標註與視覺化圖解</h4>
+              <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">NotebookLM 與 Napkin AI 有大量學員處於「未聽過、不熟悉」的狀態。這具有最高的教學溢價與體驗反差。</p>
+              <div class="p-3.5 rounded-xl bg-cyan-50 border border-cyan-100 text-xs text-cyan-700 space-y-1.5 leading-relaxed">
                 <p class="font-bold">🎯 講師授課切入指引：</p>
                 <p>1. **NotebookLM**：主打「只信任你提供的內部文件」，不聯網、無幻覺，適合應對公司資安疑慮的對象。</p>
                 <p>2. **Napkin AI**：帶領學員實作「貼入一文字 ➔ 秒生圖解矩陣」，展示資訊視覺化的效率增幅。</p>
@@ -356,23 +356,23 @@
           </div>
 
           <!-- 課堂實戰演示名單 -->
-          <div class="pt-6 border-t border-slate-850">
-            <h4 class="font-bold text-white mb-3 text-sm sm:text-base flex items-center space-x-2">
+          <div class="pt-6 border-t border-slate-200">
+            <h4 class="font-bold text-slate-900 mb-3 text-sm sm:text-base flex items-center space-x-2">
               <span>💡</span>
               <span>學員上傳之待解「雞肋任務」演示庫 (講師精選)</span>
             </h4>
             <p class="text-xs text-slate-500 mb-4">以下列出明確勾選「願意提供實戰去識別化資料」之學員回覆。建議講師直接選擇此情境做為教學現場解題，說服力直接拉滿！</p>
-            <div class="overflow-x-auto border border-slate-850 rounded-xl bg-slate-950/40">
+            <div class="overflow-x-auto border border-slate-200 rounded-xl bg-slate-50">
               <table class="min-w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr class="bg-slate-950 text-slate-400 font-bold border-b border-slate-850">
+                  <tr class="bg-slate-100 text-slate-600 font-bold border-b border-slate-200">
                     <th class="p-4">職務別</th>
                     <th class="p-4">現有常用工具</th>
                     <th class="p-4">期待解決之具體工作任務</th>
                     <th class="p-4 text-center">演示意願狀態</th>
                   </tr>
                 </thead>
-                <tbody id="demo-tasks-tbody" class="divide-y divide-slate-850 text-slate-300"></tbody>
+                <tbody id="demo-tasks-tbody" class="divide-y divide-slate-200 text-slate-700"></tbody>
               </table>
             </div>
           </div>
@@ -382,21 +382,21 @@
 
     <!-- 分頁四: 原始數據 -->
     <div id="tab-rawData" class="hidden space-y-8">
-      <div class="bg-slate-900/40 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-5">
+      <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm shadow-slate-100 space-y-5">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h3 class="text-xl font-bold text-white">📋 學員原始問卷回覆明細</h3>
-            <p id="raw-total-desc" class="text-xs text-slate-400">目前清單共包含 0 筆資料</p>
+            <h3 class="text-xl font-bold text-slate-900">📋 學員原始問卷回覆明細</h3>
+            <p id="raw-total-desc" class="text-xs text-slate-500">目前清單共包含 0 筆資料</p>
           </div>
-          <button onclick="resetToDemo()" class="px-3.5 py-1.5 text-xs font-bold rounded-lg border border-slate-850 hover:bg-slate-850 text-slate-400 hover:text-white transition">
+          <button onclick="resetToDemo()" class="px-3.5 py-1.5 text-xs font-bold rounded-lg border border-slate-200 hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition">
             重設為預設模擬資料
           </button>
         </div>
 
-        <div class="overflow-x-auto border border-slate-850 rounded-xl bg-slate-950/60">
+        <div class="overflow-x-auto border border-slate-200 rounded-xl bg-white">
           <table class="min-w-full text-left text-xs border-collapse">
             <thead>
-              <tr class="bg-slate-950 text-slate-400 font-bold border-b border-slate-850">
+              <tr class="bg-slate-100 text-slate-600 font-bold border-b border-slate-200">
                 <th class="p-4">時間</th>
                 <th class="p-4">職務類別</th>
                 <th class="p-4">常用工具</th>
@@ -408,7 +408,7 @@
                 <th class="p-4">最期待解決之具體問題</th>
               </tr>
             </thead>
-            <tbody id="raw-data-tbody" class="divide-y divide-slate-850 text-slate-300"></tbody>
+            <tbody id="raw-data-tbody" class="divide-y divide-slate-200 text-slate-700"></tbody>
           </table>
         </div>
       </div>
@@ -416,14 +416,14 @@
 
   </main>
 
-  <footer class="border-t border-slate-900 bg-slate-950 py-10 text-center text-xs text-slate-600 space-y-1 mt-12">
+  <footer class="border-t border-slate-200 bg-white py-10 text-center text-xs text-slate-500 space-y-1 mt-12 shadow-inner">
     <p>© 2026 AntigravityIDE. 全球高端學術、課程教學數據儀表板系統.</p>
-    <p class="text-slate-700 font-semibold">特別針對 GitHub Pages 與靜態發布進行完美適配 &amp; 萬用 CSV 拖曳即用</p>
+    <p class="text-slate-400 font-semibold">特別針對 GitHub Pages 與靜態發布進行完美適配 &amp; 萬用 CSV 拖曳即用</p>
   </footer>
 
   <!-- 自定義 Toast 提示框 -->
-  <div id="toast-box" class="fixed bottom-5 right-5 z-50 transform translate-y-10 opacity-0 pointer-events-none transition-all duration-300 flex items-center bg-slate-900 border border-violet-500/50 text-white px-5 py-3 rounded-2xl shadow-2xl shadow-violet-950/40">
-    <span id="toast-icon" class="mr-2.5 text-violet-400 font-bold">ℹ️</span>
+  <div id="toast-box" class="fixed bottom-5 right-5 z-50 transform translate-y-10 opacity-0 pointer-events-none transition-all duration-300 flex items-center bg-white border border-indigo-100 text-slate-800 px-5 py-3 rounded-2xl shadow-xl shadow-slate-200">
+    <span id="toast-icon" class="mr-2.5 text-indigo-600 font-bold">ℹ️</span>
     <span id="toast-text" class="text-xs sm:text-sm font-semibold">已更新數據</span>
   </div>
 
@@ -487,7 +487,7 @@
         promptSkill: 2,
         notebookLM: "從未聽過",
         visualTool: "否，都用純文字",
-        difficulty: "找不到適合自己工作流程的 AI 工具",
+        difficulty: "找不到適合自己工作流程 of AI 工具",
         expectSolve: "報表數據快速查錯與摘要",
         boringTask: "願意，我可以提供相關去識別化資料",
         whatIsAI: "高效率的決策諮詢顧問"
@@ -675,10 +675,10 @@
         const btn = document.getElementById(`btn-${t}`);
         const view = document.getElementById(`tab-${t}`);
         if (t === tabId) {
-          btn.className = "px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold tracking-wide transition-all duration-300 bg-violet-600 text-white shadow-lg";
+          btn.className = "px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold tracking-wide transition-all duration-300 bg-indigo-600 text-white shadow-md";
           view.classList.remove("hidden");
         } else {
-          btn.className = "px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold tracking-wide transition-all duration-300 text-slate-400 hover:text-white hover:bg-slate-900";
+          btn.className = "px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold tracking-wide transition-all duration-300 text-slate-600 hover:text-slate-900 hover:bg-slate-200/50";
           view.classList.add("hidden");
         }
       });
@@ -789,6 +789,7 @@
       processFile(file);
     }
 
+    // CSV 解析入口
     function processFile(file) {
       const reader = new FileReader();
       reader.onload = (event) => {
@@ -803,7 +804,7 @@
           // 重設並重新繪製
           clearFilters();
         } else {
-          showToast("無法解析該 CSV，請確定格式符合問卷回覆規格。", "error");
+          showToast("無法解析該 CSV，請確定檔案格式正確性。", "error");
         }
       };
       reader.readAsText(file);
@@ -828,7 +829,7 @@
     });
 
     // ==========================================
-    // 篩選與渲染管線 (React-Like Data Stream)
+    // 篩選與渲染管線 (純 JS 管理)
     // ==========================================
     function initFilterOptions() {
       const roles = ["ALL", ...new Set(state.surveyData.map(d => d.role).filter(Boolean))];
@@ -883,7 +884,7 @@
       document.getElementById("filter-role").value = "ALL";
       document.getElementById("filter-frequency").value = "ALL";
       document.getElementById("search-term").value = "";
-      document.getElementById("btn-clear-filters").class = "hidden";
+      document.getElementById("btn-clear-filters").classList.add("hidden");
       
       executeFilter();
     }
@@ -903,12 +904,12 @@
     }
 
     // ==========================================
-    // 看板渲染子模組 (純 JS DOM 引擎)
+    // 看板與圖表核心渲染
     // ==========================================
     function renderCurrentTab() {
-      initFilterOptions(); // 保持選項最新
+      initFilterOptions(); // 保持下拉選單同步最新狀態
       
-      // 計算 KPI
+      // 計算全域 KPI 指標
       const total = state.filteredData.length;
       const grandTotal = state.surveyData.length || 1;
       
@@ -959,7 +960,7 @@
       const toolStats = Object.entries(toolCounts).map(([name, value]) => ({ name, value })).sort((a,b)=>b.value-a.value);
       
       const toolsChart = document.getElementById("chart-tools");
-      toolsChart.innerHTML = toolStats.length === 0 ? `<div class="text-center py-12 text-slate-500 text-xs">無匹配數據</div>` : "";
+      toolsChart.innerHTML = toolStats.length === 0 ? `<div class="text-center py-12 text-slate-400 text-xs font-bold">無匹配數據</div>` : "";
       
       const maxToolValue = Math.max(...toolStats.map(d => d.value)) || 1;
       toolStats.forEach((item, index) => {
@@ -967,11 +968,11 @@
         toolsChart.innerHTML += `
           <div class="space-y-1.5 group">
             <div class="flex justify-between text-xs sm:text-sm">
-              <span class="font-bold text-slate-300 group-hover:text-white transition">${index+1}. ${item.name}</span>
-              <span class="text-violet-400 font-black">${item.value} 票</span>
+              <span class="font-bold text-slate-700 group-hover:text-slate-900 transition">${index+1}. {${item.name}}</span>
+              <span class="text-indigo-600 font-black">${item.value} 票</span>
             </div>
-            <div class="h-3 bg-slate-950 rounded-lg overflow-hidden p-0.5 border border-slate-850">
-              <div class="h-full bg-gradient-to-r from-violet-600 via-indigo-500 to-indigo-400 rounded-md shadow-[0_0_12px_rgba(139,92,246,0.3)] transition-all duration-1000" style="width: ${ratio}%"></div>
+            <div class="h-3 bg-slate-100 rounded-lg overflow-hidden p-0.5 border border-slate-200/60">
+              <div class="h-full bg-gradient-to-r from-indigo-500 via-indigo-600 to-indigo-700 rounded-md transition-all duration-1000 shadow-[0_0_8px_rgba(79,70,229,0.15)]" style="width: ${ratio}%"></div>
             </div>
           </div>
         `;
@@ -983,7 +984,7 @@
       const sceneStats = Object.entries(sceneCounts).map(([name, value]) => ({ name, value })).sort((a,b)=>b.value-a.value);
       
       const scenesChart = document.getElementById("chart-scenarios");
-      scenesChart.innerHTML = sceneStats.length === 0 ? `<div class="text-center py-12 text-slate-500 text-xs">無匹配數據</div>` : "";
+      scenesChart.innerHTML = sceneStats.length === 0 ? `<div class="text-center py-12 text-slate-400 text-xs font-bold">無匹配數據</div>` : "";
       
       const maxSceneValue = Math.max(...sceneStats.map(d => d.value)) || 1;
       sceneStats.forEach((item, index) => {
@@ -991,11 +992,11 @@
         scenesChart.innerHTML += `
           <div class="space-y-1.5 group">
             <div class="flex justify-between text-xs sm:text-sm">
-              <span class="font-bold text-slate-300 group-hover:text-white transition">${index+1}. ${item.name}</span>
-              <span class="text-fuchsia-400 font-black">${item.value} 票</span>
+              <span class="font-bold text-slate-700 group-hover:text-slate-900 transition">${index+1}. {${item.name}}</span>
+              <span class="text-pink-600 font-black">${item.value} 票</span>
             </div>
-            <div class="h-3 bg-slate-950 rounded-lg overflow-hidden p-0.5 border border-slate-850">
-              <div class="h-full bg-gradient-to-r from-fuchsia-600 via-pink-500 to-pink-400 rounded-md shadow-[0_0_12px_rgba(236,72,153,0.3)] transition-all duration-1000" style="width: ${ratio}%"></div>
+            <div class="h-3 bg-slate-100 rounded-lg overflow-hidden p-0.5 border border-slate-200/60">
+              <div class="h-full bg-gradient-to-r from-pink-500 via-pink-600 to-pink-700 rounded-md transition-all duration-1000 shadow-[0_0_8px_rgba(219,39,119,0.15)]" style="width: ${ratio}%"></div>
             </div>
           </div>
         `;
@@ -1007,20 +1008,20 @@
       const painStats = Object.entries(painCounts).map(([name, value]) => ({ name, value })).sort((a,b)=>b.value-a.value);
       
       const obstaclesChart = document.getElementById("chart-obstacles");
-      obstaclesChart.innerHTML = painStats.length === 0 ? `<div class="text-center py-12 text-slate-500 text-xs">無匹配數據</div>` : "";
+      obstaclesChart.innerHTML = painStats.length === 0 ? `<div class="text-center py-12 text-slate-400 text-xs font-bold">無匹配數據</div>` : "";
       
       const totalObstacles = painStats.reduce((acc, curr) => acc + curr.value, 0) || 1;
       painStats.forEach((item) => {
         const percent = ((item.value / totalObstacles) * 100).toFixed(0);
         obstaclesChart.innerHTML += `
           <div class="flex items-center space-x-4">
-            <div class="w-10 text-right"><span class="text-xs sm:text-sm font-black text-slate-400">${percent}%</span></div>
+            <div class="w-10 text-right"><span class="text-xs sm:text-sm font-black text-slate-500">${percent}%</span></div>
             <div class="flex-1">
               <div class="flex justify-between text-[11px] sm:text-xs mb-1">
-                <span class="text-slate-300 font-semibold">${item.name}</span>
+                <span class="text-slate-700 font-semibold">${item.name}</span>
                 <span class="text-slate-500 font-bold">${item.value} 人</span>
               </div>
-              <div class="h-2 bg-slate-950 rounded-full overflow-hidden p-0.5">
+              <div class="h-2 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200/40">
                 <div class="h-full bg-gradient-to-r from-pink-500 to-rose-500 rounded-full" style="width: ${percent}%"></div>
               </div>
             </div>
@@ -1048,17 +1049,17 @@
       state.filteredData.forEach(d => {
         if (!d.whatIsAI || d.whatIsAI === "無" || d.whatIsAI === "無特別困難") return;
         quotesBox.innerHTML += `
-          <div class="p-4 rounded-xl bg-slate-950/60 border border-slate-850 hover:border-violet-500/40 transition flex flex-col justify-between space-y-4 shadow-md">
-            <p class="text-xs sm:text-sm text-slate-200 font-medium leading-relaxed italic">" ${d.whatIsAI} "</p>
-            <div class="flex justify-between items-center text-[10px] text-slate-500 font-bold pt-2 border-t border-slate-900">
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/60 hover:border-indigo-300 transition flex flex-col justify-between space-y-4 shadow-sm">
+            <p class="text-xs sm:text-sm text-slate-800 font-medium leading-relaxed italic">" ${d.whatIsAI} "</p>
+            <div class="flex justify-between items-center text-[10px] text-slate-500 font-bold pt-2 border-t border-slate-200/60">
               <span>職別: ${d.role}</span>
-              <span>頻率: ${d.frequency}</span>
+              <span>頻率: {${d.frequency}}</span>
             </div>
           </div>
         `;
       });
       if (quotesBox.innerHTML === "") {
-        quotesBox.innerHTML = `<div class="col-span-full text-center py-12 text-slate-600 text-xs font-bold">無金句心聲數據</div>`;
+        quotesBox.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400 text-xs font-bold">無金句心聲數據</div>`;
       }
     }
 
@@ -1105,18 +1106,18 @@
       const mTable = document.getElementById("matrix-table");
       
       // 表頭
-      let thead = `<tr class="bg-slate-950 border-b border-slate-850">
-        <th class="p-4 font-black text-slate-400 uppercase tracking-widest border-r border-slate-850 w-48">Y \\ X 軸</th>`;
+      let thead = `<tr class="bg-slate-100 border-b border-slate-200">
+        <th class="p-4 font-black text-slate-600 uppercase tracking-widest border-r border-slate-200 w-48">Y \\ X 軸</th>`;
       xValues.forEach(x => {
-        thead += `<th class="p-4 font-bold text-slate-300 min-w-[120px] text-center">${x}</th>`;
+        thead += `<th class="p-4 font-bold text-slate-700 min-w-[120px] text-center">${x}</th>`;
       });
       thead += "</tr>";
 
       // 表體
       let tbody = "";
       yValues.forEach(y => {
-        tbody += `<tr class="border-b border-slate-850 hover:bg-slate-900/30">
-          <td class="p-4 font-bold text-slate-300 border-r border-slate-850 w-48 truncate max-w-[200px]" title="${y}">${y}</td>`;
+        tbody += `<tr class="border-b border-slate-200 hover:bg-slate-50">
+          <td class="p-4 font-bold text-slate-800 border-r border-slate-200 w-48 truncate max-w-[200px]" title="${y}">${y}</td>`;
         
         xValues.forEach(x => {
           const count = grid[x]?.[y] || 0;
@@ -1126,11 +1127,11 @@
           
           let styleAttr = "";
           if (intensity > 0) {
-            styleAttr = `style="background-color: rgba(99, 102, 241, ${0.1 + intensity * 0.7}); text-shadow: 0 0 6px rgba(0,0,0,0.5);"`;
+            styleAttr = `style="background-color: rgba(79, 70, 229, ${0.08 + intensity * 0.42});"`;
           }
           
           tbody += `<td ${styleAttr} class="p-4 text-center font-black transition-colors duration-200">
-            <span class="${count > 0 ? 'text-white text-sm' : 'text-slate-700'}">${count}</span>
+            <span class="${count > 0 ? 'text-indigo-950 text-sm font-extrabold' : 'text-slate-300'}">${count}</span>
           </td>`;
         });
         tbody += "</tr>";
@@ -1177,12 +1178,12 @@
       const targets = state.surveyData.filter(d => d.boringTask && d.boringTask.includes("願意"));
       targets.forEach(d => {
         tbody.innerHTML += `
-          <tr class="hover:bg-slate-900/30 transition-colors">
-            <td class="p-4 font-bold text-slate-200">${d.role}</td>
-            <td class="p-4 text-slate-400">${d.tools.join(", ")}</td>
-            <td class="p-4 font-semibold text-violet-300">${d.expectSolve || "解讀特定複雜規格書或報表查錯"}</td>
+          <tr class="hover:bg-slate-100/50 transition-colors">
+            <td class="p-4 font-bold text-slate-800">${d.role}</td>
+            <td class="p-4 text-slate-500 font-medium">${d.tools.join(", ")}</td>
+            <td class="p-4 font-semibold text-indigo-700">${d.expectSolve || "解讀特定複雜規格書或報表查錯"}</td>
             <td class="p-4 text-center">
-              <span class="inline-flex items-center px-2 py-1 rounded bg-violet-500/15 text-violet-300 border border-violet-500/30 font-bold text-[10px]">
+              <span class="inline-flex items-center px-2 py-1 rounded bg-violet-50 text-violet-700 border border-violet-200 font-bold text-[10px]">
                 ${d.boringTask}
               </span>
             </td>
@@ -1191,13 +1192,12 @@
       });
       
       if (tbody.innerHTML === "") {
-        tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-600 font-bold text-xs">無學員提供雞肋任務</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-400 font-bold text-xs">無學員提供雞肋任務</td></tr>`;
       }
     }
 
     function copyInstructorReport() {
       const report = generateReportString();
-      // 使用相容性最高的 execCommand 確保可在 Sandboxed 瀏覽器正常運作
       const textarea = document.createElement("textarea");
       textarea.value = report;
       document.body.appendChild(textarea);
@@ -1216,22 +1216,22 @@
       
       state.filteredData.forEach(d => {
         tbody.innerHTML += `
-          <tr class="hover:bg-slate-900/30 transition-colors">
-            <td class="p-4 text-slate-600 whitespace-nowrap">${d.timestamp}</td>
-            <td class="p-4 font-bold text-white whitespace-nowrap">${d.role}</td>
-            <td class="p-4 text-violet-400 whitespace-nowrap">${d.tools.join(", ")}</td>
-            <td class="p-4 text-slate-400 whitespace-nowrap">${d.frequency}</td>
-            <td class="p-4 font-black text-amber-400 whitespace-nowrap">${d.efficiency} ★</td>
-            <td class="p-4 font-black text-indigo-400 whitespace-nowrap">${d.promptSkill} 分</td>
-            <td class="p-4 text-slate-400 whitespace-nowrap">${d.notebookLM}</td>
-            <td class="p-4 text-pink-300 truncate max-w-[200px]" title="${d.difficulty}">${d.difficulty}</td>
-            <td class="p-4 text-slate-300 font-medium truncate max-w-[200px]" title="${d.expectSolve}">${d.expectSolve || "無"}</td>
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="p-4 text-slate-400 whitespace-nowrap">${d.timestamp}</td>
+            <td class="p-4 font-bold text-slate-900 whitespace-nowrap">${d.role}</td>
+            <td class="p-4 text-indigo-600 font-semibold whitespace-nowrap">${d.tools.join(", ")}</td>
+            <td class="p-4 text-slate-600 whitespace-nowrap">${d.frequency}</td>
+            <td class="p-4 font-black text-amber-500 whitespace-nowrap">${d.efficiency} ★</td>
+            <td class="p-4 font-black text-indigo-600 whitespace-nowrap">${d.promptSkill} 分</td>
+            <td class="p-4 text-slate-600 whitespace-nowrap">${d.notebookLM}</td>
+            <td class="p-4 text-pink-600 truncate max-w-[200px]" title="${d.difficulty}">${d.difficulty}</td>
+            <td class="p-4 text-slate-700 font-medium truncate max-w-[200px]" title="${d.expectSolve}">${d.expectSolve || "無"}</td>
           </tr>
         `;
       });
       
       if (tbody.innerHTML === "") {
-        tbody.innerHTML = `<tr><td colspan="9" class="p-8 text-center text-slate-600 font-black">無符合當前條件之數據</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9" class="p-8 text-center text-slate-400 font-bold">無符合當前條件之數據</td></tr>`;
       }
     }
 
